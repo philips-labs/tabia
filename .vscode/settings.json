@@ -1,0 +1,4 @@
+{
+	"go.formatTool": "goimports",
+	"go.testEnvFile": "${workspaceFolder}/.env"
+}
