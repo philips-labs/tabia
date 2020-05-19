@@ -42,6 +42,23 @@ func createBitbucket() *cli.Command {
 					},
 				},
 			},
+			{
+				Name:   "repositories",
+				Usage:  "display insights on repositories",
+				Action: repositories,
+				Flags: []cli.Flag{
+					&cli.StringSliceFlag{
+						Name:     "projects",
+						Aliases:  []string{"P"},
+						Usage:    "fetches repositories for given projects",
+						Required: true,
+					},
+					&cli.BoolFlag{
+						Name:  "json",
+						Usage: "outputs results in JSON format",
+					},
+				},
+			},
 		},
 	}
 }
@@ -76,6 +93,40 @@ func projects(c *cli.Context) error {
 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", "ID", "Key", "Name", "Public")
 		for _, project := range projects {
 			fmt.Fprintf(w, "%d\t%s\t%s\t%t\n", project.ID, project.Key, project.Name, project.Public)
+		}
+		w.Flush()
+	}
+
+	return nil
+}
+
+func repositories(c *cli.Context) error {
+	api := c.String("api")
+	token := c.String("token")
+	asJSON := c.Bool("json")
+	projects := c.StringSlice("projects")
+
+	bb := bitbucket.NewClientWithTokenAuth(api, token)
+
+	results := make([]bitbucket.Repository, 0)
+	for _, project := range projects {
+		resp, err := bb.Repositories.List(project)
+		if err != nil {
+			return err
+		}
+		results = append(results, resp.Values...)
+	}
+
+	if asJSON {
+		err := printJSON(c.App.Writer, results)
+		if err != nil {
+			return err
+		}
+	} else {
+		w := tabwriter.NewWriter(c.App.Writer, 3, 0, 2, ' ', tabwriter.TabIndent)
+		fmt.Fprintln(w, "Project\tID\tSlug\tName\tPublic")
+		for _, repo := range results {
+			fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%t\n", repo.Project.Key, repo.ID, repo.Slug, repo.Name, repo.Public)
 		}
 		w.Flush()
 	}

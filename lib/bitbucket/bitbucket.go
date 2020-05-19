@@ -18,9 +18,13 @@ type PagedResponse struct {
 }
 
 type Links struct {
-	Self []struct {
+	Clone *[]struct {
 		Href string `json:"href"`
-	} `json:"self"`
+		Name string `json:"name"`
+	} `json:"clone,omitempty"`
+	Self *[]struct {
+		Href string `json:"href"`
+	} `json:"self,omitempty"`
 }
 
 type Client struct {
@@ -28,6 +32,7 @@ type Client struct {
 	Auth         interface{}
 	HttpClient   *http.Client
 	Projects     Projects
+	Repositories Repositories
 }
 
 type BasicAuth struct {
@@ -47,6 +52,7 @@ func NewClientWithBasicAuth(endpoint, username, password string) *Client {
 	}
 
 	c.Projects = Projects{c}
+	c.Repositories = Repositories{c}
 	return c
 }
 
@@ -57,6 +63,7 @@ func NewClientWithTokenAuth(endpoint, token string) *Client {
 		HttpClient:   new(http.Client),
 	}
 	c.Projects = Projects{c}
+	c.Repositories = Repositories{c}
 	return c
 }
 
