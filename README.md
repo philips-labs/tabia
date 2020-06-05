@@ -30,6 +30,10 @@ make test
 
 ## Run
 
+### Bitbucket
+
+To interact with Bitbucket `tabia` makes use of the [Bitbucket 1.0 Rest API](https://docs.atlassian.com/bitbucket-server/rest/7.3.0/bitbucket-rest.html).
+
 ```bash
 bin/tabia bitbucket --help
 bin/tabia bitbucket projects --help
