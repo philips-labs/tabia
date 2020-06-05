@@ -124,14 +124,24 @@ func repositories(c *cli.Context) error {
 		}
 	} else {
 		w := tabwriter.NewWriter(c.App.Writer, 3, 0, 2, ' ', tabwriter.TabIndent)
-		fmt.Fprintln(w, "Project\tID\tSlug\tName\tPublic")
+		fmt.Fprintln(w, "Project\tID\tSlug\tName\tPublic\tClone")
 		for _, repo := range results {
-			fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%t\n", repo.Project.Key, repo.ID, repo.Slug, repo.Name, repo.Public)
+			httpClone := getCloneURL(repo.Links.Clone, "http")
+			fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%t\t%s\n", repo.Project.Key, repo.ID, repo.Slug, repo.Name, repo.Public, httpClone)
 		}
 		w.Flush()
 	}
 
 	return nil
+}
+
+func getCloneURL(links []bitbucket.CloneLink, linkName string) string {
+	for _, l := range links {
+		if l.Name == linkName {
+			return l.Href
+		}
+	}
+	return ""
 }
 
 func printJSON(w io.Writer, data interface{}) error {

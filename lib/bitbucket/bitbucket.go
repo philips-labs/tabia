@@ -18,13 +18,15 @@ type PagedResponse struct {
 }
 
 type Links struct {
-	Clone *[]struct {
-		Href string `json:"href"`
-		Name string `json:"name"`
-	} `json:"clone,omitempty"`
-	Self *[]struct {
+	Clone []CloneLink `json:"clone,omitempty"`
+	Self  *[]struct {
 		Href string `json:"href"`
 	} `json:"self,omitempty"`
+}
+
+type CloneLink struct {
+	Href string `json:"href"`
+	Name string `json:"name"`
 }
 
 type Client struct {
