@@ -6,8 +6,9 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/philips-labs/tabia/cmd"
 	"github.com/urfave/cli/v2"
+
+	"github.com/philips-labs/tabia/cmd"
 )
 
 const (

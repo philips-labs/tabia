@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"text/tabwriter"
 
-	"github.com/philips-labs/tabia/lib/bitbucket"
 	"github.com/urfave/cli/v2"
+
+	"github.com/philips-labs/tabia/lib/bitbucket"
+	"github.com/philips-labs/tabia/lib/output"
 )
 
 func createBitbucket() *cli.Command {
@@ -84,7 +84,7 @@ func projects(c *cli.Context) error {
 	}
 
 	if asJSON {
-		err := printJSON(c.App.Writer, projects)
+		err := output.PrintJSON(c.App.Writer, projects)
 		if err != nil {
 			return err
 		}
@@ -118,7 +118,7 @@ func repositories(c *cli.Context) error {
 	}
 
 	if asJSON {
-		err := printJSON(c.App.Writer, results)
+		err := output.PrintJSON(c.App.Writer, results)
 		if err != nil {
 			return err
 		}
@@ -142,13 +142,4 @@ func getCloneURL(links []bitbucket.CloneLink, linkName string) string {
 		}
 	}
 	return ""
-}
-
-func printJSON(w io.Writer, data interface{}) error {
-	json, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		return err
-	}
-	fmt.Fprintf(w, "%s\n", json)
-	return nil
 }
