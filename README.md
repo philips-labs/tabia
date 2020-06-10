@@ -1,5 +1,8 @@
 # Tabia
 
+[![Go CI](https://github.com/philips-labs/tabia/workflows/Go%20CI/badge.svg)](https://github.com/philips-labs/tabia/actions)
+[![codecov](https://codecov.io/gh/philips-labs/tabia/branch/develop/graph/badge.svg?token=K2R9WOXNBm)](https://codecov.io/gh/philips-labs/tabia)
+
 Tabia means characteristic in Swahili. Tabia is giving us insights on the characteristics of our code bases.
 
 ## Setup
