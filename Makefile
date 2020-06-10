@@ -23,7 +23,7 @@ test: ## Run tests
 	CGO_ENABLED=1 go test -v -race -count=1 ./...
 
 test-cover: ## Run tests with coverage
-	CGO_ENABLED=1 go test -v -race -count=1 -covermode=atomic -cover ./...
+	CGO_ENABLED=1 go test -v -race -count=1 -covermode=atomic -coverprofile=coverage.out ./...
 
 build: clean ## Build binary
 	@echo VERSION: $(VERSION)
@@ -37,7 +37,7 @@ fmt: ## formats all *.go files added to git
 
 coverage-out: test-cover ## Show coverage in cli
 	@echo Coverage details
-	@go tool cover -func=cover.out
+	@go tool cover -func=coverage.out
 
 coverage-html: test-cover ## Show coverage in browser
-	@go tool cover -html=cover.out
+	@go tool cover -html=coverage.out
