@@ -29,6 +29,9 @@ build: clean ## Build binary
 	@echo VERSION: $(VERSION)
 	go build -v -trimpath -ldflags '-X "main.version=${VERSION}"' -o ${BIN_OUTPUT} ${MAIN_DIRECTORY}
 
+outdated: ## Checks for outdated dependencies
+	go list -u -m -json all | go-mod-outdated -update
+
 fmt: ## formats all *.go files added to git
 	gofmt -s -l -w $(SRCS)
 
