@@ -40,7 +40,7 @@ func createBitbucket() *cli.Command {
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:        "format",
-						Aliases:     []string{"f"},
+						Aliases:     []string{"F"},
 						Usage:       "Formats output in the given `FORMAT`",
 						EnvVars:     []string{"TABIA_OUTPUT_FORMAT"},
 						DefaultText: "",
