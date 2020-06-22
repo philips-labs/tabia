@@ -1,6 +1,10 @@
 package grimoirelab
 
 import (
+	"fmt"
+	"os"
+	"strings"
+
 	"github.com/philips-labs/tabia/lib/bitbucket"
 )
 
@@ -40,8 +44,27 @@ func updateProject(project *Project, repo bitbucket.Repository, metadataFactory 
 	project.Metadata = metadataFactory(repo)
 	link := getCloneLink(repo, "http")
 	if link != "" {
+		if !repo.Public {
+			bbUser := os.Getenv("TABIA_BITBUCKET_USER")
+			bbToken := os.Getenv("TABIA_BITBUCKET_TOKEN")
+			basicAuth := fmt.Sprintf("%s:%s", bbUser, bbToken)
+			url := after(link, "https://")
+			link = fmt.Sprintf("https://%s@%s", basicAuth, url)
+		}
 		project.Git = append(project.Git, link)
 	}
+}
+
+func after(value, some string) string {
+	pos := strings.LastIndex(value, some)
+	if pos == -1 {
+		return ""
+	}
+	adjustedPos := pos + len(some)
+	if adjustedPos >= len(value) {
+		return ""
+	}
+	return value[adjustedPos:len(value)]
 }
 
 func getCloneLink(repo bitbucket.Repository, linkName string) string {
