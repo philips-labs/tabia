@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"text/tabwriter"
 
+	"github.com/philips-labs/tabia/lib/grimoirelab"
+
 	"github.com/urfave/cli/v2"
 
 	"github.com/philips-labs/tabia/lib/bitbucket"
@@ -36,26 +38,34 @@ func createBitbucket() *cli.Command {
 				Usage:  "display insights on projects",
 				Action: projects,
 				Flags: []cli.Flag{
-					&cli.BoolFlag{
-						Name:  "json",
-						Usage: "outputs results in JSON format",
-					},
-				},
+					&cli.StringFlag{
+						Name:        "format",
+						Aliases:     []string{"f"},
+						Usage:       "Formats output in the given `FORMAT`",
+						EnvVars:     []string{"TABIA_OUTPUT_FORMAT"},
+						DefaultText: "",
+					}},
 			},
 			{
 				Name:   "repositories",
 				Usage:  "display insights on repositories",
 				Action: repositories,
 				Flags: []cli.Flag{
-					&cli.StringSliceFlag{
-						Name:     "projects",
-						Aliases:  []string{"P"},
-						Usage:    "fetches repositories for given projects",
-						Required: true,
-					},
 					&cli.BoolFlag{
-						Name:  "json",
-						Usage: "outputs results in JSON format",
+						Name:  "all",
+						Usage: "fetches repositories for all projects",
+					},
+					&cli.StringSliceFlag{
+						Name:    "projects",
+						Aliases: []string{"P"},
+						Usage:   "fetches repositories for given projects",
+					},
+					&cli.StringFlag{
+						Name:        "format",
+						Aliases:     []string{"F"},
+						Usage:       "Formats output in the given `FORMAT`",
+						EnvVars:     []string{"TABIA_OUTPUT_FORMAT"},
+						DefaultText: "",
 					},
 				},
 			},
@@ -66,7 +76,7 @@ func createBitbucket() *cli.Command {
 func projects(c *cli.Context) error {
 	api := c.String("api")
 	token := c.String("token")
-	asJSON := c.Bool("json")
+	format := c.String("format")
 
 	bb := bitbucket.NewClientWithTokenAuth(api, token)
 	projects := make([]bitbucket.Project, 0)
@@ -83,12 +93,13 @@ func projects(c *cli.Context) error {
 		}
 	}
 
-	if asJSON {
+	switch format {
+	case "json":
 		err := output.PrintJSON(c.App.Writer, projects)
 		if err != nil {
 			return err
 		}
-	} else {
+	default:
 		w := tabwriter.NewWriter(c.App.Writer, 3, 0, 2, ' ', tabwriter.TabIndent)
 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", "ID", "Key", "Name", "Public")
 		for _, project := range projects {
@@ -103,7 +114,7 @@ func projects(c *cli.Context) error {
 func repositories(c *cli.Context) error {
 	api := c.String("api")
 	token := c.String("token")
-	asJSON := c.Bool("json")
+	format := c.String("format")
 	projects := c.StringSlice("projects")
 
 	bb := bitbucket.NewClientWithTokenAuth(api, token)
@@ -117,12 +128,24 @@ func repositories(c *cli.Context) error {
 		results = append(results, resp.Values...)
 	}
 
-	if asJSON {
+	switch format {
+	case "json":
 		err := output.PrintJSON(c.App.Writer, results)
 		if err != nil {
 			return err
 		}
-	} else {
+	case "grimoirelab":
+		projects := grimoirelab.ConvertProjectsJSON(results, func(repo bitbucket.Repository) grimoirelab.Metadata {
+			return grimoirelab.Metadata{
+				"title":   repo.Project.Name,
+				"program": "One Codebase",
+			}
+		})
+		err := output.PrintJSON(c.App.Writer, projects)
+		if err != nil {
+			return err
+		}
+	default:
 		w := tabwriter.NewWriter(c.App.Writer, 3, 0, 2, ' ', tabwriter.TabIndent)
 		fmt.Fprintln(w, "Project\tID\tSlug\tName\tPublic\tClone")
 		for _, repo := range results {
@@ -130,6 +153,7 @@ func repositories(c *cli.Context) error {
 			fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%t\t%s\n", repo.Project.Key, repo.ID, repo.Slug, repo.Name, repo.Public, httpClone)
 		}
 		w.Flush()
+
 	}
 
 	return nil
