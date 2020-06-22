@@ -26,6 +26,9 @@ type MetadataFactory func(repo bitbucket.Repository) Metadata
 // ConvertProjectsJSON converts the repositories into grimoirelab projects.json
 func ConvertProjectsJSON(repos []bitbucket.Repository, metadataFactory MetadataFactory) Projects {
 	results := make(Projects)
+	bbUser := os.Getenv("TABIA_BITBUCKET_USER")
+	bbToken := os.Getenv("TABIA_BITBUCKET_TOKEN")
+	basicAuth := fmt.Sprintf("%s:%s", bbUser, bbToken)
 	for _, repo := range repos {
 		project, found := results[repo.Project.Name]
 		if !found {
@@ -33,21 +36,18 @@ func ConvertProjectsJSON(repos []bitbucket.Repository, metadataFactory MetadataF
 			project = results[repo.Project.Name]
 			project.Git = make([]string, 0)
 		}
-		updateProject(&project, repo, metadataFactory)
+		updateProject(&project, repo, basicAuth, metadataFactory)
 		results[repo.Project.Name] = project
 	}
 
 	return results
 }
 
-func updateProject(project *Project, repo bitbucket.Repository, metadataFactory MetadataFactory) {
+func updateProject(project *Project, repo bitbucket.Repository, basicAuth string, metadataFactory MetadataFactory) {
 	project.Metadata = metadataFactory(repo)
 	link := getCloneLink(repo, "http")
 	if link != "" {
 		if !repo.Public {
-			bbUser := os.Getenv("TABIA_BITBUCKET_USER")
-			bbToken := os.Getenv("TABIA_BITBUCKET_TOKEN")
-			basicAuth := fmt.Sprintf("%s:%s", bbUser, bbToken)
 			url := after(link, "https://")
 			link = fmt.Sprintf("https://%s@%s", basicAuth, url)
 		}
