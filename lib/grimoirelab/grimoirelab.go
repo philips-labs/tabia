@@ -2,29 +2,34 @@ package grimoirelab
 
 import (
 	"fmt"
+	"net/url"
 	"os"
-	"strings"
 
 	"github.com/philips-labs/tabia/lib/bitbucket"
+	"github.com/philips-labs/tabia/lib/github"
 )
 
 // Projects holds all projects to be loaded in Grimoirelab
-type Projects map[string]Project
+type Projects map[string]*Project
 
 // Project holds the project resources and metadata
 type Project struct {
 	Metadata Metadata `json:"meta,omitempty"`
 	Git      []string `json:"git,omitempty"`
+	Github   []string `json:"github,omitempty"`
 }
 
 // Metadata hold metadata for a given project
 type Metadata map[string]string
 
-// MetadataFactory allows to provide a custom generated metadata
-type MetadataFactory func(repo bitbucket.Repository) Metadata
+// BitbucketMetadataFactory allows to provide a custom generated metadata
+type BitbucketMetadataFactory func(repo bitbucket.Repository) Metadata
 
-// ConvertProjectsJSON converts the repositories into grimoirelab projects.json
-func ConvertProjectsJSON(repos []bitbucket.Repository, metadataFactory MetadataFactory) Projects {
+// GithubMetadataFactory allows to provide a custom generated metadata
+type GithubMetadataFactory func(repo github.Repository) Metadata
+
+// ConvertBitbucketToProjectsJSON converts the repositories into grimoirelab projects.json
+func ConvertBitbucketToProjectsJSON(repos []bitbucket.Repository, metadataFactory BitbucketMetadataFactory) Projects {
 	results := make(Projects)
 	bbUser := os.Getenv("TABIA_BITBUCKET_USER")
 	bbToken := os.Getenv("TABIA_BITBUCKET_TOKEN")
@@ -32,39 +37,58 @@ func ConvertProjectsJSON(repos []bitbucket.Repository, metadataFactory MetadataF
 	for _, repo := range repos {
 		project, found := results[repo.Project.Name]
 		if !found {
-			results[repo.Project.Name] = Project{}
+			results[repo.Project.Name] = &Project{}
 			project = results[repo.Project.Name]
 			project.Git = make([]string, 0)
 		}
-		updateProject(&project, repo, basicAuth, metadataFactory)
-		results[repo.Project.Name] = project
+		updateFromBitbucketProject(project, repo, basicAuth, metadataFactory)
 	}
 
 	return results
 }
 
-func updateProject(project *Project, repo bitbucket.Repository, basicAuth string, metadataFactory MetadataFactory) {
+// ConvertGithubToProjectsJSON converts the repositories into grimoirelab projects.json
+func ConvertGithubToProjectsJSON(repos []github.Repository, metadataFactory GithubMetadataFactory) Projects {
+	results := make(Projects)
+	bbUser := os.Getenv("TABIA_GITHUB_USER")
+	bbToken := os.Getenv("TABIA_GITHUB_TOKEN")
+	basicAuth := fmt.Sprintf("%s:%s", bbUser, bbToken)
+	for _, repo := range repos {
+		project, found := results[repo.Owner.Login]
+		if !found {
+			results[repo.Owner.Login] = &Project{}
+			project = results[repo.Owner.Login]
+			project.Git = make([]string, 0)
+		}
+		updateFromGithubProject(project, repo, basicAuth, metadataFactory)
+	}
+
+	return results
+}
+
+func updateFromBitbucketProject(project *Project, repo bitbucket.Repository, basicAuth string, metadataFactory BitbucketMetadataFactory) {
 	project.Metadata = metadataFactory(repo)
 	link := getCloneLink(repo, "http")
 	if link != "" {
 		if !repo.Public {
-			url := after(link, "https://")
-			link = fmt.Sprintf("https://%s@%s", basicAuth, url)
+			u, _ := url.Parse(link)
+			link = fmt.Sprintf("%s://%s@%s%s", u.Scheme, basicAuth, u.Hostname(), u.EscapedPath())
 		}
 		project.Git = append(project.Git, link)
 	}
 }
 
-func after(value, some string) string {
-	pos := strings.LastIndex(value, some)
-	if pos == -1 {
-		return ""
+func updateFromGithubProject(project *Project, repo github.Repository, basicAuth string, metadataFactory GithubMetadataFactory) {
+	project.Metadata = metadataFactory(repo)
+	link := repo.URL
+	if link != "" {
+		if repo.IsPrivate {
+			u, _ := url.Parse(link)
+			link = fmt.Sprintf("%s://%s@%s%s", u.Scheme, basicAuth, u.Hostname(), u.EscapedPath())
+		}
+		project.Git = append(project.Git, link+".git")
+		project.Github = append(project.Github, link)
 	}
-	adjustedPos := pos + len(some)
-	if adjustedPos >= len(value) {
-		return ""
-	}
-	return value[adjustedPos:len(value)]
 }
 
 func getCloneLink(repo bitbucket.Repository, linkName string) string {

@@ -27,13 +27,16 @@ type PageInfo struct {
 	EndCursor   githubv4.String `json:"end_cursor,omitempty"`
 }
 
+type Owner struct {
+	Login string `json:"login,omitempty"`
+}
+
 type Repository struct {
-	Name  string `json:"name,omitempty"`
-	ID    string `json:"id,omitempty"`
-	URL   string `json:"url,omitempty"`
-	Owner struct {
-		Login string `json:"login,omitempty"`
-	} `json:"owner,omitempty"`
+	Name      string    `json:"name,omitempty"`
+	ID        string    `json:"id,omitempty"`
+	URL       string    `json:"url,omitempty"`
+	SSHURL    string    `json:"ssh_url,omitempty"`
+	Owner     Owner     `json:"owner,omitempty"`
 	IsPrivate bool      `json:"is_private,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`

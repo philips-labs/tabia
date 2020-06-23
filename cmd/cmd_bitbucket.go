@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"text/tabwriter"
 
-	"github.com/philips-labs/tabia/lib/grimoirelab"
-
 	"github.com/urfave/cli/v2"
 
 	"github.com/philips-labs/tabia/lib/bitbucket"
+	"github.com/philips-labs/tabia/lib/grimoirelab"
 	"github.com/philips-labs/tabia/lib/output"
 )
 
@@ -135,7 +134,7 @@ func bitbucketRepositories(c *cli.Context) error {
 			return err
 		}
 	case "grimoirelab":
-		projects := grimoirelab.ConvertProjectsJSON(results, func(repo bitbucket.Repository) grimoirelab.Metadata {
+		projects := grimoirelab.ConvertBitbucketToProjectsJSON(results, func(repo bitbucket.Repository) grimoirelab.Metadata {
 			return grimoirelab.Metadata{
 				"title":   repo.Project.Name,
 				"program": "One Codebase",

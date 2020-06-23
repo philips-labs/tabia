@@ -6,11 +6,11 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/philips-labs/tabia/lib/output"
+	"github.com/urfave/cli/v2"
 
 	"github.com/philips-labs/tabia/lib/github"
-
-	"github.com/urfave/cli/v2"
+	"github.com/philips-labs/tabia/lib/grimoirelab"
+	"github.com/philips-labs/tabia/lib/output"
 )
 
 func createGithub() *cli.Command {
@@ -70,6 +70,17 @@ func githubRepositories(c *cli.Context) error {
 	switch format {
 	case "json":
 		output.PrintJSON(c.App.Writer, repositories)
+	case "grimoirelab":
+		projects := grimoirelab.ConvertGithubToProjectsJSON(repositories, func(repo github.Repository) grimoirelab.Metadata {
+			return grimoirelab.Metadata{
+				"title":   repo.Name,
+				"program": "One Codebase",
+			}
+		})
+		err := output.PrintJSON(c.App.Writer, projects)
+		if err != nil {
+			return err
+		}
 	default:
 		w := tabwriter.NewWriter(c.App.Writer, 3, 0, 2, ' ', tabwriter.TabIndent)
 		fmt.Fprintln(w, " \tName\tOwner\tPublic\tClone")
