@@ -1,7 +1,7 @@
 package grimoirelab_test
 
 import (
-	"fmt"
+	"net/url"
 	"os"
 	"testing"
 
@@ -17,7 +17,6 @@ func TestConvertBitbucketProjectsJSON(t *testing.T) {
 
 	bbUser := os.Getenv("TABIA_BITBUCKET_USER")
 	bbToken := os.Getenv("TABIA_BITBUCKET_TOKEN")
-	basicAuth := fmt.Sprintf("%s:%s", bbUser, bbToken)
 
 	repos := []bitbucket.Repository{
 		bitbucket.Repository{
@@ -83,20 +82,14 @@ func TestConvertBitbucketProjectsJSON(t *testing.T) {
 		gitP1 := projects["P1"].Git
 		if assert.Len(gitP1, 2) {
 			assert.Equal(gitP1[0], "https://bitbucket.org/scm/p1/r1.git")
-			assert.Equal("https://", gitP1[1][:8])
-			assert.Contains(gitP1[1], basicAuth)
-			assert.Contains(gitP1[1], "@bitbucket.org/scm/p1/r2.git")
+			assertUrlHasBasicAuth(t, gitP1[1], "https", bbUser, bbToken, "bitbucket.org", "/scm/p1/r2.git")
 		}
 		assert.Len(projects["P1"].Metadata, 2)
 
 		gitP2 := projects["P2"].Git
 		if assert.Len(gitP2, 3) {
-			assert.Equal("https://", gitP2[0][:8])
-			assert.Contains(gitP2[0], basicAuth)
-			assert.Contains(gitP2[0], "@bitbucket.org/scm/p2/r1.git")
-			assert.Equal("https://", gitP2[1][:8])
-			assert.Contains(gitP2[1], basicAuth)
-			assert.Contains(gitP2[1], "@bitbucket.org/scm/p2/r2.git")
+			assertUrlHasBasicAuth(t, gitP2[0], "https", bbUser, bbToken, "bitbucket.org", "/scm/p2/r1.git")
+			assertUrlHasBasicAuth(t, gitP2[1], "https", bbUser, bbToken, "bitbucket.org", "/scm/p2/r2.git")
 			assert.Equal(gitP2[2], "https://bitbucket.org/scm/p2/r3.git")
 		}
 		assert.Len(projects["P2"].Metadata, 2)
@@ -108,7 +101,6 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 
 	ghUser := os.Getenv("TABIA_GITHUB_USER")
 	ghToken := os.Getenv("TABIA_GITHUB_TOKEN")
-	basicAuth := fmt.Sprintf("%s:%s", ghUser, ghToken)
 
 	repos := []github.Repository{
 		github.Repository{
@@ -144,13 +136,24 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 		assert.Len(projects["philips-software"].Metadata, 2)
 
 		if assert.Len(projects["philips-labs"].Git, 1) {
-			assert.Equal("https://", projects["philips-labs"].Git[0][:8])
-			assert.Contains(projects["philips-labs"].Git[0], basicAuth)
-			assert.Contains(projects["philips-labs"].Git[0], "@github.com/philips-labs/tabia.git")
-			assert.Equal("https://", projects["philips-labs"].Github[0][:8])
-			assert.Contains(projects["philips-labs"].Github[0], basicAuth)
-			assert.Contains(projects["philips-labs"].Github[0], "@github.com/philips-labs/tabia")
+			assertUrlHasBasicAuth(t, projects["philips-labs"].Git[0], "https", ghUser, ghToken, "github.com", "/philips-labs/tabia.git")
+		}
+		if assert.Len(projects["philips-labs"].Github, 1) {
+			assertUrlHasBasicAuth(t, projects["philips-labs"].Github[0], "https", ghUser, ghToken, "github.com", "/philips-labs/tabia")
 		}
 		assert.Len(projects["philips-labs"].Metadata, 2)
 	}
+}
+
+func assertUrlHasBasicAuth(t *testing.T, uri, scheme, user, password, hostname, path string) {
+	assert := assert.New(t)
+	u, err := url.Parse(uri)
+	assert.NoError(err)
+	assert.Equal(scheme, u.Scheme)
+	assert.Equal(user, u.User.Username())
+	pass, isSet := u.User.Password()
+	assert.True(isSet)
+	assert.Equal(password, pass)
+	assert.Equal(hostname, u.Hostname())
+	assert.Equal(path, u.EscapedPath())
 }
