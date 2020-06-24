@@ -30,7 +30,7 @@ jobs:
           echo $result
           [ -n "$result" ] && exit 1 || exit 0
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         id: go-mod-cache
         with:
           path: ~/go/pkg/mod
