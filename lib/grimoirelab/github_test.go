@@ -2,6 +2,8 @@ package grimoirelab_test
 
 import (
 	"os"
+	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,6 +11,20 @@ import (
 	"github.com/philips-labs/tabia/lib/github"
 	"github.com/philips-labs/tabia/lib/grimoirelab"
 )
+
+func TestLoadGithubProjectMatcherFromJSON(t *testing.T) {
+	assert := assert.New(t)
+
+	json := strings.NewReader(`{
+	"rules": {
+		"My Project": { "url": "(?i)foo|Bar|BAZ" }
+	}
+}`)
+	m, err := grimoirelab.NewGithubProjectMatcherFromJSON(json)
+	if assert.NoError(err) {
+		assert.Equal("(?i)foo|Bar|BAZ", m.Rules["My Project"].URL.String())
+	}
+}
 
 func TestConvertGithubProjectsJSON(t *testing.T) {
 	type MyString string
@@ -38,12 +54,19 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 	}
 
 	projects := grimoirelab.ConvertGithubToProjectsJSON(
-		repos, func(repo github.Repository) grimoirelab.Metadata {
+		repos,
+		func(repo github.Repository) grimoirelab.Metadata {
 			return grimoirelab.Metadata{
 				"title":   repo.Owner.Login,
 				"program": "One Codebase",
 			}
-		})
+		},
+		&grimoirelab.GithubProjectMatcher{
+			Rules: map[string]grimoirelab.GithubProjectMatcherRule{
+				"One Codebase": grimoirelab.GithubProjectMatcherRule{URL: &grimoirelab.Regexp{Regexp: regexp.MustCompile("(?i)Tabia")}},
+			},
+		},
+	)
 
 	if assert.Len(projects, 2) {
 		if assert.Len(projects["philips-software"].Git, 1) {
@@ -53,15 +76,15 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 		}
 		assert.Len(projects["philips-software"].Metadata, 2)
 
-		if assert.Len(projects["philips-labs"].Git, 1) {
-			assertUrlHasBasicAuth(t, projects["philips-labs"].Git[0], "https", ghUser, ghToken, "github.com", "/philips-labs/tabia.git")
+		if assert.Len(projects["One Codebase"].Git, 1) {
+			assertUrlHasBasicAuth(t, projects["One Codebase"].Git[0], "https", ghUser, ghToken, "github.com", "/philips-labs/tabia.git")
 		}
-		if assert.Len(projects["philips-labs"].Github, 1) {
-			assertUrlHasBasicAuth(t, projects["philips-labs"].Github[0], "https", ghUser, ghToken, "github.com", "/philips-labs/tabia")
+		if assert.Len(projects["One Codebase"].Github, 1) {
+			assertUrlHasBasicAuth(t, projects["One Codebase"].Github[0], "https", ghUser, ghToken, "github.com", "/philips-labs/tabia")
 		}
-		if assert.Len(projects["philips-labs"].GithubRepo, 1) {
-			assertUrlHasBasicAuth(t, projects["philips-labs"].GithubRepo[0], "https", ghUser, ghToken, "github.com", "/philips-labs/tabia")
+		if assert.Len(projects["One Codebase"].GithubRepo, 1) {
+			assertUrlHasBasicAuth(t, projects["One Codebase"].GithubRepo[0], "https", ghUser, ghToken, "github.com", "/philips-labs/tabia")
 		}
-		assert.Len(projects["philips-labs"].Metadata, 2)
+		assert.Len(projects["One Codebase"].Metadata, 2)
 	}
 }

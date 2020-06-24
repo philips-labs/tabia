@@ -37,6 +37,12 @@ func createGithub() *cli.Command {
 						Aliases: []string{"O"},
 						Usage:   "fetches repositories for given owner",
 					},
+					&cli.PathFlag{
+						Name:      "matching",
+						Aliases:   []string{"M"},
+						Usage:     "matches repositories to projects based on json file",
+						TakesFile: true,
+					},
 					&cli.StringFlag{
 						Name:        "format",
 						Aliases:     []string{"F"},
@@ -53,6 +59,7 @@ func createGithub() *cli.Command {
 func githubRepositories(c *cli.Context) error {
 	owners := c.StringSlice("owner")
 	format := c.String("format")
+	projectMatchingConfig := c.Path("matching")
 
 	client := github.NewClientWithTokenAuth(os.Getenv("TABIA_GITHUB_TOKEN"))
 	ctx, cancel := context.WithCancel(c.Context)
@@ -71,13 +78,26 @@ func githubRepositories(c *cli.Context) error {
 	case "json":
 		output.PrintJSON(c.App.Writer, repositories)
 	case "grimoirelab":
-		projects := grimoirelab.ConvertGithubToProjectsJSON(repositories, func(repo github.Repository) grimoirelab.Metadata {
-			return grimoirelab.Metadata{
-				"title":   repo.Owner.Login,
-				"program": "One Codebase",
-			}
-		})
-		err := output.PrintJSON(c.App.Writer, projects)
+		json, err := os.Open(projectMatchingConfig)
+		if err != nil {
+			return err
+		}
+		defer json.Close()
+		projectMatcher, err := grimoirelab.NewGithubProjectMatcherFromJSON(json)
+		if err != nil {
+			return err
+		}
+
+		projects := grimoirelab.ConvertGithubToProjectsJSON(
+			repositories,
+			func(repo github.Repository) grimoirelab.Metadata {
+				return grimoirelab.Metadata{
+					"title":   repo.Owner.Login,
+					"program": "One Codebase",
+				}
+			},
+			projectMatcher)
+		err = output.PrintJSON(c.App.Writer, projects)
 		if err != nil {
 			return err
 		}
