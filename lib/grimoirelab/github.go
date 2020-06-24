@@ -24,30 +24,47 @@ type GithubProjectMatcherRule struct {
 	URL *Regexp `json:"url,omitempty"`
 }
 
-// Regexp adds unmarshalling from json for regexp.Regexp
+// Regexp embeds a regexp.Regexp, and adds Text/JSON
+// (un)marshaling.
 type Regexp struct {
-	*regexp.Regexp
+	regexp.Regexp
 }
 
-// UnmarshalText unmarshals json into a regexp.Regexp
+// Compile wraps the result of the standard library's
+// regexp.Compile, for easy (un)marshaling.
+func Compile(expr string) (*Regexp, error) {
+	r, err := regexp.Compile(expr)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Regexp{*r}, nil
+}
+
+// MustCompile wraps the result of the standard library's
+// regexp.Compile, for easy (un)marshaling.
+func MustCompile(expr string) *Regexp {
+	r := regexp.MustCompile(expr)
+	return &Regexp{*r}
+}
+
+// UnmarshalText satisfies the encoding.TextMarshaler interface,
+// also used by json.Unmarshal.
 func (r *Regexp) UnmarshalText(b []byte) error {
-	regex, err := regexp.Compile(string(b))
+	rr, err := Compile(string(b))
 	if err != nil {
 		return err
 	}
 
-	r.Regexp = regex
+	*r = *rr
 
 	return nil
 }
 
-// MarshalText marshals regexp.Regexp as string
+// MarshalText satisfies the encoding.TextMarshaler interface,
+// also used by json.Marshal.
 func (r *Regexp) MarshalText() ([]byte, error) {
-	if r.Regexp != nil {
-		return []byte(r.Regexp.String()), nil
-	}
-
-	return nil, nil
+	return []byte(r.String()), nil
 }
 
 // NewGithubProjectMatcherFromJSON initializes GithubProjectMatcher from json
@@ -57,6 +74,7 @@ func NewGithubProjectMatcherFromJSON(data io.Reader) (*GithubProjectMatcher, err
 	if err != nil {
 		return nil, err
 	}
+
 	return &m, err
 }
 

@@ -2,7 +2,6 @@ package grimoirelab_test
 
 import (
 	"os"
-	"regexp"
 	"strings"
 	"testing"
 
@@ -81,7 +80,7 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 		},
 		&grimoirelab.GithubProjectMatcher{
 			Rules: map[string]grimoirelab.GithubProjectMatcherRule{
-				"One Codebase": grimoirelab.GithubProjectMatcherRule{URL: &grimoirelab.Regexp{Regexp: regexp.MustCompile("(?i)Tabia")}},
+				"One Codebase": grimoirelab.GithubProjectMatcherRule{URL: grimoirelab.MustCompile("(?i)Tabia")},
 			},
 		},
 	)
