@@ -12,7 +12,7 @@ import (
 	"github.com/philips-labs/tabia/lib/grimoirelab"
 )
 
-func TestLoadGithubProjectMatcherFromJSON(t *testing.T) {
+func TestNewGithubProjectMatcherFromJSON(t *testing.T) {
 	assert := assert.New(t)
 
 	json := strings.NewReader(`{
@@ -24,6 +24,24 @@ func TestLoadGithubProjectMatcherFromJSON(t *testing.T) {
 	if assert.NoError(err) {
 		assert.Equal("(?i)foo|Bar|BAZ", m.Rules["My Project"].URL.String())
 	}
+
+	json = strings.NewReader(`{
+		"rules": {
+			"My Project": { "url": "" },
+		}
+	}`)
+	m, err = grimoirelab.NewGithubProjectMatcherFromJSON(json)
+	assert.EqualError(err, "invalid character '}' looking for beginning of object key string")
+	assert.Nil(m)
+
+	json = strings.NewReader(`{
+		"rules": {
+			"My Project": { "url": "(invalid|regex" }
+		}
+	}`)
+	m, err = grimoirelab.NewGithubProjectMatcherFromJSON(json)
+	assert.EqualError(err, "error parsing regexp: missing closing ): `(invalid|regex`")
+	assert.Nil(m)
 }
 
 func TestConvertGithubProjectsJSON(t *testing.T) {
