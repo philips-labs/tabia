@@ -132,6 +132,7 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 		if assert.Len(projects["philips-software"].Git, 1) {
 			assert.Equal("https://github.com/philips-software/logproxy.git", projects["philips-software"].Git[0])
 			assert.Equal("https://github.com/philips-software/logproxy", projects["philips-software"].Github[0])
+			assert.Equal("https://github.com/philips-software/logproxy", projects["philips-software"].GithubRepo[0])
 		}
 		assert.Len(projects["philips-software"].Metadata, 2)
 
@@ -140,6 +141,9 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 		}
 		if assert.Len(projects["philips-labs"].Github, 1) {
 			assertUrlHasBasicAuth(t, projects["philips-labs"].Github[0], "https", ghUser, ghToken, "github.com", "/philips-labs/tabia")
+		}
+		if assert.Len(projects["philips-labs"].GithubRepo, 1) {
+			assertUrlHasBasicAuth(t, projects["philips-labs"].GithubRepo[0], "https", ghUser, ghToken, "github.com", "/philips-labs/tabia")
 		}
 		assert.Len(projects["philips-labs"].Metadata, 2)
 	}

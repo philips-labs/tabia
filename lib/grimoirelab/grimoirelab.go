@@ -14,9 +14,10 @@ type Projects map[string]*Project
 
 // Project holds the project resources and metadata
 type Project struct {
-	Metadata Metadata `json:"meta,omitempty"`
-	Git      []string `json:"git,omitempty"`
-	Github   []string `json:"github,omitempty"`
+	Metadata   Metadata `json:"meta,omitempty"`
+	Git        []string `json:"git,omitempty"`
+	Github     []string `json:"github,omitempty"`
+	GithubRepo []string `json:"github:repo,omitempty"`
 }
 
 // Metadata hold metadata for a given project
@@ -88,6 +89,7 @@ func updateFromGithubProject(project *Project, repo github.Repository, basicAuth
 		}
 		project.Git = append(project.Git, link+".git")
 		project.Github = append(project.Github, link)
+		project.GithubRepo = append(project.GithubRepo, link)
 	}
 }
 
