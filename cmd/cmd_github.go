@@ -73,7 +73,7 @@ func githubRepositories(c *cli.Context) error {
 	case "grimoirelab":
 		projects := grimoirelab.ConvertGithubToProjectsJSON(repositories, func(repo github.Repository) grimoirelab.Metadata {
 			return grimoirelab.Metadata{
-				"title":   repo.Name,
+				"title":   repo.Owner.Login,
 				"program": "One Codebase",
 			}
 		})
