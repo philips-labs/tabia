@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    name: CI  Backend
+    name: Continuous Integration
 
     strategy:
       matrix:
@@ -15,10 +15,10 @@ jobs:
       fail-fast: true
 
     steps:
-      - name: Set up Go ${{ matrix.node-version }}
+      - name: Set up Go ${{ matrix.go-version }}
         uses: actions/setup-go@v2.0.3
         with:
-          go-version: ${{ matrix.node-version }}
+          go-version: ${{ matrix.go-version }}
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -30,7 +30,8 @@ jobs:
           echo $result
           [ -n "$result" ] && exit 1 || exit 0
 
-      - uses: actions/cache@v2
+      - name: Cache Go modules
+        uses: actions/cache@v2
         id: go-mod-cache
         with:
           path: ~/go/pkg/mod
