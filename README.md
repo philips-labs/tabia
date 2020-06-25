@@ -42,3 +42,34 @@ bin/tabia bitbucket --help
 bin/tabia bitbucket projects --help
 bin/tabia bitbucket repositories --help
 ```
+
+### Github
+
+To interact with Github `tabia` makes use of the [Github graphql API](https://api.github.com/graphql).
+
+```bash
+bin/tabia github --help
+bin/tabia github repositories --help
+```
+
+To expose the repositories in [Grimoirelab projects.json](https://github.com/chaoss/grimoirelab-sirmordred#projectsjson-) format, you can optionally provide a json file to map repositories to projects. By default the project will be mapped to the owner of the repository. Anything not matching the rules will fall back to this default.
+
+E.g.:
+
+```bash
+bin/tabia -O philips-labs -M github-projects.json -F grimoirelab > projects.json
+```
+
+Regexes should be defined in the [following format](https://golang.org/pkg/regexp/syntax/).
+
+```json
+{
+  "rules": {
+    "One Codebase": { "url": "tabia|varys|garo|^code\\-chars$" },
+    "HSDP": { "url": "(?i)hsdp" },
+    "iX": { "url": "(?i)ix\\-" },
+    "Licensing Entitlement": { "url": "(?i)lem\\-" },
+    "Code Signing": { "url": "(?i)^code\\-signing$|notary" }
+  }
+}
+```

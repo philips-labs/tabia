@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"text/tabwriter"
 
-	"github.com/philips-labs/tabia/lib/grimoirelab"
-
 	"github.com/urfave/cli/v2"
 
 	"github.com/philips-labs/tabia/lib/bitbucket"
+	"github.com/philips-labs/tabia/lib/grimoirelab"
 	"github.com/philips-labs/tabia/lib/output"
 )
 
@@ -36,7 +35,7 @@ func createBitbucket() *cli.Command {
 			{
 				Name:   "projects",
 				Usage:  "display insights on projects",
-				Action: projects,
+				Action: bitbucketProjects,
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:        "format",
@@ -49,7 +48,7 @@ func createBitbucket() *cli.Command {
 			{
 				Name:   "repositories",
 				Usage:  "display insights on repositories",
-				Action: repositories,
+				Action: bitbucketRepositories,
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
 						Name:  "all",
@@ -73,7 +72,7 @@ func createBitbucket() *cli.Command {
 	}
 }
 
-func projects(c *cli.Context) error {
+func bitbucketProjects(c *cli.Context) error {
 	api := c.String("api")
 	token := c.String("token")
 	format := c.String("format")
@@ -111,7 +110,7 @@ func projects(c *cli.Context) error {
 	return nil
 }
 
-func repositories(c *cli.Context) error {
+func bitbucketRepositories(c *cli.Context) error {
 	api := c.String("api")
 	token := c.String("token")
 	format := c.String("format")
@@ -135,7 +134,7 @@ func repositories(c *cli.Context) error {
 			return err
 		}
 	case "grimoirelab":
-		projects := grimoirelab.ConvertProjectsJSON(results, func(repo bitbucket.Repository) grimoirelab.Metadata {
+		projects := grimoirelab.ConvertBitbucketToProjectsJSON(results, func(repo bitbucket.Repository) grimoirelab.Metadata {
 			return grimoirelab.Metadata{
 				"title":   repo.Project.Name,
 				"program": "One Codebase",
@@ -153,7 +152,6 @@ func repositories(c *cli.Context) error {
 			fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%t\t%s\n", repo.Project.Key, repo.ID, repo.Slug, repo.Name, repo.Public, httpClone)
 		}
 		w.Flush()
-
 	}
 
 	return nil
