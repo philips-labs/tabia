@@ -73,3 +73,22 @@ Regexes should be defined in the [following format](https://golang.org/pkg/regex
   }
 }
 ```
+
+To generate the output for example in a markdown format you can use the option for a templated output format. This requires you to provide the path to a template file as well. Templates can be defined using the following [template/text package syntax](https://golang.org/pkg/text/template/).
+
+E.g.:
+
+```md markdown.tmpl
+# Our repositories
+
+Our repository overview. Private/Internal repositories are marked with a __*__
+
+{{range .}}* [{{ .Name}}]({{ .URL }}) {{if .IsPrivate }}__*__{{end}}
+{{end}}
+```
+
+Using above template we can now easily generate a markdown file with this unordered list of repository links.
+
+```bash
+bin/tabia -O philips-labs -F templated -T markdown.tmpl > repositories.md
+```
