@@ -52,6 +52,8 @@ bin/tabia github --help
 bin/tabia github repositories --help
 ```
 
+### Output - Grimoirelab
+
 To expose the repositories in [Grimoirelab projects.json](https://github.com/chaoss/grimoirelab-sirmordred#projectsjson-) format, you can optionally provide a json file to map repositories to projects. By default the project will be mapped to the owner of the repository. Anything not matching the rules will fall back to this default.
 
 E.g.:
@@ -74,6 +76,8 @@ Regexes should be defined in the [following format](https://golang.org/pkg/regex
 }
 ```
 
+#### Output - using template
+
 To generate the output for example in a markdown format you can use the option for a templated output format. This requires you to provide the path to a template file as well. Templates can be defined using the following [template/text package syntax](https://golang.org/pkg/text/template/).
 
 E.g.:
@@ -91,4 +95,38 @@ Using above template we can now easily generate a markdown file with this unorde
 
 ```bash
 bin/tabia -O philips-labs -F templated -T markdown.tmpl > repositories.md
+```
+
+#### Filter
+
+The following repository fields can be filtered on.
+
+* Name
+* ID
+* URL
+* SSHURL
+* Owner
+* IsPrivate
+* CreatedAt
+* UpdatedAt
+* PushedAt
+
+The following functions are available.
+
+* `func Contains(s, substr string) bool`
+
+```bash
+$ bin/tabia -O philips-labs -f '{ !.IsPrivate && !Contains(.Name, "terraform") }'
+0001  helm2cf                               philips-labs  true    https://github.com/philips-labs/helm2cf
+0002  dct-notary-admin                      philips-labs  true    https://github.com/philips-labs/dct-notary-admin
+0003  notary                                philips-labs  true    https://github.com/philips-labs/notary
+0004  about-this-organization               philips-labs  true    https://github.com/philips-labs/about-this-organization
+0005  sonar-scanner-action                  philips-labs  true    https://github.com/philips-labs/sonar-scanner-action
+0006  medical-delivery-drone                philips-labs  true    https://github.com/philips-labs/medical-delivery-drone
+0007  dangerous-dave                        philips-labs  true    https://github.com/philips-labs/dangerous-dave
+0008  varys                                 philips-labs  true    https://github.com/philips-labs/varys
+0009  garo                                  philips-labs  true    https://github.com/philips-labs/garo
+..........
+...........
+........
 ```
