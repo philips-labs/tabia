@@ -106,7 +106,7 @@ The following repository fields can be filtered on.
 * URL
 * SSHURL
 * Owner
-* IsPrivate
+* Visibility
 * CreatedAt
 * UpdatedAt
 * PushedAt

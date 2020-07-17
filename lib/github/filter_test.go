@@ -12,9 +12,9 @@ func TestReduce(t *testing.T) {
 	assert := assert.New(t)
 
 	repos := []github.Repository{
-		github.Repository{Name: "tabia", IsPrivate: false, Owner: github.Owner{Login: "philips-labs"}},
-		github.Repository{Name: "garo", IsPrivate: false, Owner: github.Owner{Login: "philips-labs"}},
-		github.Repository{Name: "dct-notary-admin", IsPrivate: false, Owner: github.Owner{Login: "philips-labs"}},
+		github.Repository{Name: "tabia", Visibility: github.Public, Owner: "philips-labs"},
+		github.Repository{Name: "garo", Visibility: github.Public, Owner: "philips-labs"},
+		github.Repository{Name: "dct-notary-admin", Visibility: github.Public, Owner: "philips-labs"},
 	}
 
 	reduced, err := github.Reduce(repos, "")
@@ -41,7 +41,7 @@ func TestReduceWrongExpression(t *testing.T) {
 	assert := assert.New(t)
 
 	repos := []github.Repository{
-		github.Repository{Name: "tabia", IsPrivate: false},
+		github.Repository{Name: "tabia", Visibility: github.Public},
 	}
 
 	reduced, err := github.Reduce(repos, `.Name == "tabia"`)
