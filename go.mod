@@ -3,6 +3,7 @@ module github.com/philips-labs/tabia
 go 1.14
 
 require (
+	github.com/antonmedv/expr v1.8.8
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/protobuf v1.3.2 // indirect

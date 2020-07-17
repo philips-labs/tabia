@@ -58,6 +58,11 @@ func createGithub() *cli.Command {
 						Usage:     "Formats output using the given `TEMPLATE`",
 						TakesFile: true,
 					},
+					&cli.StringFlag{
+						Name:    "filter",
+						Aliases: []string{"f"},
+						Usage:   "filters repositories based on the given `EXPRESSION`",
+					},
 				},
 			},
 		},
@@ -67,7 +72,7 @@ func createGithub() *cli.Command {
 func githubRepositories(c *cli.Context) error {
 	owners := c.StringSlice("owner")
 	format := c.String("format")
-	projectMatchingConfig := c.Path("matching")
+	filter := c.String("filter")
 
 	client := github.NewClientWithTokenAuth(os.Getenv("TABIA_GITHUB_TOKEN"))
 	ctx, cancel := context.WithCancel(c.Context)
@@ -79,13 +84,18 @@ func githubRepositories(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		repositories = append(repositories, repos...)
+		filtered, err := github.Reduce(repos, filter)
+		if err != nil {
+			return err
+		}
+		repositories = append(repositories, filtered...)
 	}
 
 	switch format {
 	case "json":
 		output.PrintJSON(c.App.Writer, repositories)
 	case "grimoirelab":
+		projectMatchingConfig := c.Path("matching")
 		json, err := os.Open(projectMatchingConfig)
 		if err != nil {
 			return err
