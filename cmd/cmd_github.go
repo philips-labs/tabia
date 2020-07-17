@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"text/tabwriter"
-	"text/template"
 
 	"github.com/urfave/cli/v2"
 
@@ -129,11 +128,7 @@ func githubRepositories(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		tmpl, err := template.New("repositories").Parse(string(tmplContent))
-		if err != nil {
-			return err
-		}
-		err = tmpl.Execute(c.App.Writer, repositories)
+		err := output.PrintUsingTemplate(c.App.Writer, tmplContent, repositories)
 		if err != nil {
 			return err
 		}
