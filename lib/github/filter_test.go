@@ -15,11 +15,13 @@ func TestReduce(t *testing.T) {
 		github.Repository{Name: "tabia", Visibility: github.Public, Owner: "philips-labs"},
 		github.Repository{Name: "garo", Visibility: github.Public, Owner: "philips-labs"},
 		github.Repository{Name: "dct-notary-admin", Visibility: github.Public, Owner: "philips-labs"},
+		github.Repository{Name: "company-draft", Visibility: github.Internal, Owner: "philips-labs"},
+		github.Repository{Name: "top-secret", Visibility: github.Private, Owner: "philips-labs"},
 	}
 
 	reduced, err := github.Reduce(repos, "")
 	if assert.NoError(err) {
-		assert.Len(reduced, 3)
+		assert.Len(reduced, 5)
 		assert.ElementsMatch(reduced, repos)
 	}
 
@@ -27,6 +29,26 @@ func TestReduce(t *testing.T) {
 	if assert.NoError(err) {
 		assert.Len(reduced, 1)
 		assert.Contains(reduced, repos[1])
+	}
+
+	reduced, err = github.Reduce(repos, `{ .IsPublic() }`)
+	if assert.NoError(err) {
+		assert.Len(reduced, 3)
+		assert.Contains(reduced, repos[0])
+		assert.Contains(reduced, repos[1])
+		assert.Contains(reduced, repos[2])
+	}
+
+	reduced, err = github.Reduce(repos, `{ .IsInternal() }`)
+	if assert.NoError(err) {
+		assert.Len(reduced, 1)
+		assert.Contains(reduced, repos[3])
+	}
+
+	reduced, err = github.Reduce(repos, `{ .IsPrivate() }`)
+	if assert.NoError(err) {
+		assert.Len(reduced, 1)
+		assert.Contains(reduced, repos[4])
 	}
 
 	reduced, err = github.Reduce(repos, `{ Contains(.Name, "ar") }`)

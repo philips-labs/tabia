@@ -2,6 +2,9 @@ package github
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -12,6 +15,7 @@ import (
 )
 
 type Client struct {
+	httpClient *http.Client
 	*githubv4.Client
 }
 
@@ -21,7 +25,7 @@ func NewClientWithTokenAuth(token string) *Client {
 
 	client := githubv4.NewClient(httpClient)
 
-	return &Client{client}
+	return &Client{httpClient, client}
 }
 
 //go:generate stringer -type=Visibility
@@ -37,6 +41,10 @@ const (
 	// Private repositories are only visible to authorized users
 	Private
 )
+
+type RestRepo struct {
+	Name string
+}
 
 type Repository struct {
 	Name       string     `json:"name,omitempty"`
@@ -74,10 +82,32 @@ func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string
 		variables["repoCursor"] = githubv4.NewString(q.Organization.Repositories.PageInfo.EndCursor)
 	}
 
-	return Map(repositories), nil
+	// currently the graphql api does not seem to support private vs internal.
+	// therefore we use the rest api to fetch the private repos so we can determine private vs internal in the Map function.
+	privateRepos, err := c.FetchRestRepositories(owner, "private")
+	if err != nil {
+		return nil, err
+	}
+	return Map(repositories, privateRepos)
 }
 
-func Map(repositories []graphql.Repository) []Repository {
+func (c *Client) FetchRestRepositories(owner, repoType string) ([]RestRepo, error) {
+	resp, err := c.httpClient.Get(fmt.Sprintf("https://api.github.com/orgs/%s/repos?type=%s", owner, repoType))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var privateRepos []RestRepo
+	err = json.NewDecoder(resp.Body).Decode(&privateRepos)
+	if err != nil {
+		return nil, err
+	}
+
+	return privateRepos, nil
+}
+
+func Map(repositories []graphql.Repository, privateRepositories []RestRepo) ([]Repository, error) {
 	repos := make([]Repository, len(repositories))
 	for i, repo := range repositories {
 		repos[i] = Repository{
@@ -92,9 +122,23 @@ func Map(repositories []graphql.Repository) []Repository {
 		}
 
 		if repo.IsPrivate {
-			repos[i].Visibility = Private
+			isPrivate := false
+			for _, privRepo := range privateRepositories {
+				if privRepo.Name == repo.Name {
+					isPrivate = true
+					break
+				}
+			}
+
+			if isPrivate {
+				repos[i].Visibility = Private
+			} else {
+				repos[i].Visibility = Internal
+			}
+		} else {
+			repos[i].Visibility = Public
 		}
 	}
 
-	return repos
+	return repos, nil
 }
