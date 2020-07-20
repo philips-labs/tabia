@@ -1,4 +1,5 @@
 bin/
+dist/
 .env
 *.out
 github-project-matching.json
