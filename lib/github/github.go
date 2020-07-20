@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -42,6 +43,23 @@ const (
 	Private
 )
 
+func (v *Visibility) UnmarshalText(text []byte) error {
+	switch strings.ToLower(string(text)) {
+	default:
+	case "public":
+		*v = Public
+	case "internal":
+		*v = Internal
+	case "private":
+		*v = Private
+	}
+	return nil
+}
+
+func (v Visibility) MarshalText() ([]byte, error) {
+	return []byte(v.String()), nil
+}
+
 type RestRepo struct {
 	Name string
 }
@@ -52,7 +70,7 @@ type Repository struct {
 	URL        string     `json:"url,omitempty"`
 	SSHURL     string     `json:"ssh_url,omitempty"`
 	Owner      string     `json:"owner,omitempty"`
-	Visibility Visibility `json:"is_private,omitempty"`
+	Visibility Visibility `json:"visibility"`
 	CreatedAt  time.Time  `json:"created_at,omitempty"`
 	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
 	PushedAt   time.Time  `json:"pushed_at,omitempty"`
