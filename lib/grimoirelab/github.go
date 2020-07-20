@@ -108,14 +108,14 @@ func getProjectName(repo github.Repository, projectMatcher *GithubProjectMatcher
 	}
 
 	// fallback to github organization name
-	return repo.Owner.Login
+	return repo.Owner
 }
 
 func updateFromGithubProject(project *Project, repo github.Repository, basicAuth string, metadataFactory GithubMetadataFactory) {
 	project.Metadata = metadataFactory(repo)
 	link := repo.URL
 	if link != "" {
-		if repo.IsPrivate {
+		if repo.Visibility != github.Public {
 			u, _ := url.Parse(link)
 			link = fmt.Sprintf("%s://%s@%s%s", u.Scheme, basicAuth, u.Hostname(), u.EscapedPath())
 		}

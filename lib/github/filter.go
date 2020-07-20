@@ -17,6 +17,21 @@ func (RepositoryFilterEnv) Contains(s, substring string) bool {
 	return strings.Contains(s, substring)
 }
 
+// IsPublic indicates if a repository has public visibility.
+func (r Repository) IsPublic() bool {
+	return r.Visibility == Public
+}
+
+// IsInternal indicates if a repository has internal visibility.
+func (r Repository) IsInternal() bool {
+	return r.Visibility == Internal
+}
+
+// IsPrivate indicates if a repository has private visibility.
+func (r Repository) IsPrivate() bool {
+	return r.Visibility == Private
+}
+
 // Reduce filters the repositories based on the given filter
 func Reduce(repositories []Repository, filter string) ([]Repository, error) {
 	if strings.TrimSpace(filter) == "" {

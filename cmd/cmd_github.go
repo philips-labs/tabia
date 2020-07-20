@@ -109,7 +109,7 @@ func githubRepositories(c *cli.Context) error {
 			repositories,
 			func(repo github.Repository) grimoirelab.Metadata {
 				return grimoirelab.Metadata{
-					"title":   repo.Owner.Login,
+					"title":   repo.Owner,
 					"program": "One Codebase",
 				}
 			},
@@ -134,9 +134,9 @@ func githubRepositories(c *cli.Context) error {
 		}
 	default:
 		w := tabwriter.NewWriter(c.App.Writer, 3, 0, 2, ' ', tabwriter.TabIndent)
-		fmt.Fprintln(w, " \tName\tOwner\tPublic\tClone")
+		fmt.Fprintln(w, " \tName\tOwner\tVisibility\tClone")
 		for i, repo := range repositories {
-			fmt.Fprintf(w, "%04d\t%s\t%s\t%t\t%s\n", i+1, repo.Name, repo.Owner.Login, !repo.IsPrivate, repo.URL)
+			fmt.Fprintf(w, "%04d\t%s\t%s\t%s\t%s\n", i+1, repo.Name, repo.Owner, repo.Visibility, repo.URL)
 		}
 		w.Flush()
 	}

@@ -106,17 +106,20 @@ The following repository fields can be filtered on.
 * URL
 * SSHURL
 * Owner
-* IsPrivate
+* Visibility
 * CreatedAt
 * UpdatedAt
 * PushedAt
 
 The following functions are available.
 
-* `func Contains(s, substr string) bool`
+* `func (RepositoryFilterEnv) Contains(s, substr string) bool`
+* `func (Repository) IsPublic() bool`
+* `func (Repository) IsInternal() bool`
+* `func (Repository) IsPrivate() bool`
 
 ```bash
-$ bin/tabia -O philips-labs -f '{ !.IsPrivate && !Contains(.Name, "terraform") }'
+$ bin/tabia -O philips-labs -f '{ .IsPrivate() && !Contains(.Name, "terraform") }'
 0001  helm2cf                               philips-labs  true    https://github.com/philips-labs/helm2cf
 0002  dct-notary-admin                      philips-labs  true    https://github.com/philips-labs/dct-notary-admin
 0003  notary                                philips-labs  true    https://github.com/philips-labs/notary

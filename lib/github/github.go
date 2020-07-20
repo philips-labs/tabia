@@ -2,14 +2,20 @@ package github
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"time"
 
 	"golang.org/x/oauth2"
 
 	"github.com/shurcooL/githubv4"
+
+	"github.com/philips-labs/tabia/lib/github/graphql"
 )
 
 type Client struct {
+	httpClient *http.Client
 	*githubv4.Client
 }
 
@@ -19,43 +25,42 @@ func NewClientWithTokenAuth(token string) *Client {
 
 	client := githubv4.NewClient(httpClient)
 
-	return &Client{client}
+	return &Client{httpClient, client}
 }
 
-type PageInfo struct {
-	HasNextPage bool            `json:"has_next_page,omitempty"`
-	EndCursor   githubv4.String `json:"end_cursor,omitempty"`
-}
+//go:generate stringer -type=Visibility
 
-type Owner struct {
-	Login string `json:"login,omitempty"`
+// Visibility indicates repository visibility
+type Visibility int
+
+const (
+	// Public repositories are publicly visible
+	Public Visibility = iota
+	// Internal repositories are only visible to organization members
+	Internal
+	// Private repositories are only visible to authorized users
+	Private
+)
+
+type RestRepo struct {
+	Name string
 }
 
 type Repository struct {
-	Name      string    `json:"name,omitempty"`
-	ID        string    `json:"id,omitempty"`
-	URL       string    `json:"url,omitempty"`
-	SSHURL    string    `json:"ssh_url,omitempty"`
-	Owner     Owner     `json:"owner,omitempty"`
-	IsPrivate bool      `json:"is_private,omitempty"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	PushedAt  time.Time `json:"pushed_at,omitempty"`
-}
-
-type Repositories struct {
-	TotalCount int          `json:"total_count,omitempty"`
-	PageInfo   PageInfo     `json:"page_info,omitempty"`
-	Nodes      []Repository `json:"nodes,omitempty"`
-}
-
-type Organization struct {
-	Repositories Repositories `graphql:"repositories(first: 100, after: $repoCursor)" json:"repositories,omitempty"`
+	Name       string     `json:"name,omitempty"`
+	ID         string     `json:"id,omitempty"`
+	URL        string     `json:"url,omitempty"`
+	SSHURL     string     `json:"ssh_url,omitempty"`
+	Owner      string     `json:"owner,omitempty"`
+	Visibility Visibility `json:"is_private,omitempty"`
+	CreatedAt  time.Time  `json:"created_at,omitempty"`
+	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
+	PushedAt   time.Time  `json:"pushed_at,omitempty"`
 }
 
 func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string) ([]Repository, error) {
 	var q struct {
-		Organization Organization `graphql:"organization(login: $owner)"`
+		Organization graphql.Organization `graphql:"organization(login: $owner)"`
 	}
 
 	variables := map[string]interface{}{
@@ -63,7 +68,7 @@ func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string
 		"repoCursor": (*githubv4.String)(nil),
 	}
 
-	var repositories []Repository
+	var repositories []graphql.Repository
 	for {
 		err := c.Query(ctx, &q, variables)
 		if err != nil {
@@ -77,5 +82,63 @@ func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string
 		variables["repoCursor"] = githubv4.NewString(q.Organization.Repositories.PageInfo.EndCursor)
 	}
 
-	return repositories, nil
+	// currently the graphql api does not seem to support private vs internal.
+	// therefore we use the rest api to fetch the private repos so we can determine private vs internal in the Map function.
+	privateRepos, err := c.FetchRestRepositories(owner, "private")
+	if err != nil {
+		return nil, err
+	}
+	return Map(repositories, privateRepos)
+}
+
+func (c *Client) FetchRestRepositories(owner, repoType string) ([]RestRepo, error) {
+	resp, err := c.httpClient.Get(fmt.Sprintf("https://api.github.com/orgs/%s/repos?type=%s", owner, repoType))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var privateRepos []RestRepo
+	err = json.NewDecoder(resp.Body).Decode(&privateRepos)
+	if err != nil {
+		return nil, err
+	}
+
+	return privateRepos, nil
+}
+
+func Map(repositories []graphql.Repository, privateRepositories []RestRepo) ([]Repository, error) {
+	repos := make([]Repository, len(repositories))
+	for i, repo := range repositories {
+		repos[i] = Repository{
+			Name:      repo.Name,
+			ID:        repo.ID,
+			URL:       repo.URL,
+			SSHURL:    repo.SSHURL,
+			Owner:     repo.Owner.Login,
+			CreatedAt: repo.CreatedAt,
+			UpdatedAt: repo.UpdatedAt,
+			PushedAt:  repo.PushedAt,
+		}
+
+		if repo.IsPrivate {
+			isPrivate := false
+			for _, privRepo := range privateRepositories {
+				if privRepo.Name == repo.Name {
+					isPrivate = true
+					break
+				}
+			}
+
+			if isPrivate {
+				repos[i].Visibility = Private
+			} else {
+				repos[i].Visibility = Internal
+			}
+		} else {
+			repos[i].Visibility = Public
+		}
+	}
+
+	return repos, nil
 }

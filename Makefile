@@ -19,13 +19,19 @@ clean: ## Clean build output
 	@echo BIN_OUTPUT: ${BIN_OUTPUT}
 	rm -rf bin/ cover.out
 
+install-tools: ## Installs tool dependencies
+	@cat tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install %
+
 test: ## Run tests
 	CGO_ENABLED=1 go test -v -race -count=1 ./...
 
 test-cover: ## Run tests with coverage
 	CGO_ENABLED=1 go test -v -race -count=1 -covermode=atomic -coverprofile=coverage.out ./...
 
-build: clean ## Build binary
+generate: ## Generate generates code using go:generate statements in source
+	go generate ./...
+
+build: clean generate ## Build binary
 	@echo VERSION: $(VERSION)
 	go build -v -trimpath -ldflags '-X "main.version=${VERSION}"' -o ${BIN_OUTPUT} ${MAIN_DIRECTORY}
 

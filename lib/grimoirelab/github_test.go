@@ -53,20 +53,16 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 
 	repos := []github.Repository{
 		github.Repository{
-			Name:      "R1",
-			IsPrivate: false,
-			URL:       "https://github.com/philips-software/logproxy",
-			Owner: github.Owner{
-				Login: "philips-software",
-			},
+			Name:       "R1",
+			Visibility: github.Public,
+			URL:        "https://github.com/philips-software/logproxy",
+			Owner:      "philips-software",
 		},
 		github.Repository{
-			Name:      "R1",
-			IsPrivate: true,
-			URL:       "https://github.com/philips-labs/tabia",
-			Owner: github.Owner{
-				Login: "philips-labs",
-			},
+			Name:       "R1",
+			Visibility: github.Private,
+			URL:        "https://github.com/philips-labs/tabia",
+			Owner:      "philips-labs",
 		},
 	}
 
@@ -74,7 +70,7 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 		repos,
 		func(repo github.Repository) grimoirelab.Metadata {
 			return grimoirelab.Metadata{
-				"title":   repo.Owner.Login,
+				"title":   repo.Owner,
 				"program": "One Codebase",
 			}
 		},
