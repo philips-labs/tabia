@@ -12,12 +12,7 @@ func PrintJSON(w io.Writer, data interface{}) error {
 	enc.SetEscapeHTML(false)
 	enc.SetIndent("", "  ")
 
-	err := enc.Encode(data)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return enc.Encode(data)
 }
 
 // PrintUsingTemplate prints the data using the given template
