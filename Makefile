@@ -47,3 +47,6 @@ coverage-out: test-cover ## Show coverage in cli
 
 coverage-html: test-cover ## Show coverage in browser
 	@go tool cover -html=coverage.out
+
+dockerize: ## Created development docker image
+	docker build -t philipssoftware/tabia:dev .
