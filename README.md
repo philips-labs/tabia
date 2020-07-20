@@ -87,7 +87,7 @@ E.g.:
 
 Our repository overview. Private/Internal repositories are marked with a __*__
 
-{{range .}}* [{{ .Name}}]({{ .URL }}) {{if .IsPrivate }}__*__{{end}}
+{{range .}}* [{{ .Name}}]({{ .URL }}) {{if .IsPrivate() }}__*__{{end}}
 {{end}}
 ```
 
