@@ -9,9 +9,9 @@ RUN CGO_ENABLED=0 go build -v -trimpath -ldflags "-X 'main.version=${VERSION}'" 
 
 FROM alpine
 LABEL maintainer="marco.franssen@philips.com"
-RUN mkdir /app
+RUN mkdir -p /app/data
 WORKDIR /app
-VOLUME [ "/app" ]
+VOLUME [ "/app/data" ]
 ENV TABIA_BITBUCKET_API=\
     TABIA_BITBUCKET_USER=\
     TABIA_BITBUCKET_TOKEN=\
