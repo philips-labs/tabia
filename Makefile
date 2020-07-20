@@ -19,6 +19,9 @@ clean: ## Clean build output
 	@echo BIN_OUTPUT: ${BIN_OUTPUT}
 	rm -rf bin/ cover.out
 
+install-tools: ## Installs tool dependencies
+	@cat tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install %
+
 test: ## Run tests
 	CGO_ENABLED=1 go test -v -race -count=1 ./...
 
