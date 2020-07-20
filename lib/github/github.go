@@ -42,6 +42,10 @@ const (
 	Private
 )
 
+func (v Visibility) MarshalJSON() ([]byte, error) {
+    return []byte(`"` + v.String() + `"`), nil
+}
+
 type RestRepo struct {
 	Name string
 }
@@ -52,7 +56,7 @@ type Repository struct {
 	URL        string     `json:"url,omitempty"`
 	SSHURL     string     `json:"ssh_url,omitempty"`
 	Owner      string     `json:"owner,omitempty"`
-	Visibility Visibility `json:"is_private,omitempty"`
+	Visibility Visibility `json:"visibility,omitempty"`
 	CreatedAt  time.Time  `json:"created_at,omitempty"`
 	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
 	PushedAt   time.Time  `json:"pushed_at,omitempty"`
