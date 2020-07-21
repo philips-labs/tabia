@@ -71,7 +71,7 @@ type Repository struct {
 	URL         string     `json:"url,omitempty"`
 	SSHURL      string     `json:"ssh_url,omitempty"`
 	Owner       string     `json:"owner,omitempty"`
-	Visibility  Visibility `json:"visibility,omitempty"`
+	Visibility  Visibility `json:"visibility"`
 	CreatedAt   time.Time  `json:"created_at,omitempty"`
 	UpdatedAt   time.Time  `json:"updated_at,omitempty"`
 	PushedAt    time.Time  `json:"pushed_at,omitempty"`
