@@ -101,8 +101,9 @@ bin/tabia -O philips-labs -F templated -T markdown.tmpl > repositories.md
 
 The following repository fields can be filtered on.
 
-* Name
 * ID
+* Name
+* Description
 * URL
 * SSHURL
 * Owner
@@ -110,6 +111,7 @@ The following repository fields can be filtered on.
 * CreatedAt
 * UpdatedAt
 * PushedAt
+* Topics
 
 The following functions are available.
 
