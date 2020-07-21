@@ -65,15 +65,16 @@ type RestRepo struct {
 }
 
 type Repository struct {
-	Name       string     `json:"name,omitempty"`
-	ID         string     `json:"id,omitempty"`
-	URL        string     `json:"url,omitempty"`
-	SSHURL     string     `json:"ssh_url,omitempty"`
-	Owner      string     `json:"owner,omitempty"`
-	Visibility Visibility `json:"visibility"`
-	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
-	PushedAt   time.Time  `json:"pushed_at,omitempty"`
+	ID          string     `json:"id,omitempty"`
+	Name        string     `json:"name,omitempty"`
+	Description string     `json:"description,omitempty"`
+	URL         string     `json:"url,omitempty"`
+	SSHURL      string     `json:"ssh_url,omitempty"`
+	Owner       string     `json:"owner,omitempty"`
+	Visibility  Visibility `json:"visibility"`
+	CreatedAt   time.Time  `json:"created_at,omitempty"`
+	UpdatedAt   time.Time  `json:"updated_at,omitempty"`
+	PushedAt    time.Time  `json:"pushed_at,omitempty"`
 }
 
 func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string) ([]Repository, error) {
@@ -129,14 +130,15 @@ func Map(repositories []graphql.Repository, privateRepositories []RestRepo) ([]R
 	repos := make([]Repository, len(repositories))
 	for i, repo := range repositories {
 		repos[i] = Repository{
-			Name:      repo.Name,
-			ID:        repo.ID,
-			URL:       repo.URL,
-			SSHURL:    repo.SSHURL,
-			Owner:     repo.Owner.Login,
-			CreatedAt: repo.CreatedAt,
-			UpdatedAt: repo.UpdatedAt,
-			PushedAt:  repo.PushedAt,
+			ID:          repo.ID,
+			Name:        repo.Name,
+			Description: strings.TrimSpace(repo.Description),
+			URL:         repo.URL,
+			SSHURL:      repo.SSHURL,
+			Owner:       repo.Owner.Login,
+			CreatedAt:   repo.CreatedAt,
+			UpdatedAt:   repo.UpdatedAt,
+			PushedAt:    repo.PushedAt,
 		}
 
 		if repo.IsPrivate {
