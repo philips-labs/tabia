@@ -119,16 +119,17 @@ The following functions are available.
 * `func (Repository) IsPrivate() bool`
 
 ```bash
-$ bin/tabia -O philips-labs -f '{ .IsPrivate() && !Contains(.Name, "terraform") }'
-0001  helm2cf                               philips-labs  true    https://github.com/philips-labs/helm2cf
-0002  dct-notary-admin                      philips-labs  true    https://github.com/philips-labs/dct-notary-admin
-0003  notary                                philips-labs  true    https://github.com/philips-labs/notary
-0004  about-this-organization               philips-labs  true    https://github.com/philips-labs/about-this-organization
-0005  sonar-scanner-action                  philips-labs  true    https://github.com/philips-labs/sonar-scanner-action
-0006  medical-delivery-drone                philips-labs  true    https://github.com/philips-labs/medical-delivery-drone
-0007  dangerous-dave                        philips-labs  true    https://github.com/philips-labs/dangerous-dave
-0008  varys                                 philips-labs  true    https://github.com/philips-labs/varys
-0009  garo                                  philips-labs  true    https://github.com/philips-labs/garo
+$ bin/tabia github repositories -O philips-labs -f '{ !.IsPrivate() && !.IsInternal() && !Contains(.Name, "terraform") }'
+      Name                                  Owner         Visibility  Clone
+0001  helm2cf                               philips-labs  Public      https://github.com/philips-labs/helm2cf
+0002  dct-notary-admin                      philips-labs  Public      https://github.com/philips-labs/dct-notary-admin
+0003  notary                                philips-labs  Public      https://github.com/philips-labs/notary
+0004  about-this-organization               philips-labs  Public      https://github.com/philips-labs/about-this-organization
+0005  sonar-scanner-action                  philips-labs  Public      https://github.com/philips-labs/sonar-scanner-action
+0006  medical-delivery-drone                philips-labs  Public      https://github.com/philips-labs/medical-delivery-drone
+0007  dangerous-dave                        philips-labs  Public      https://github.com/philips-labs/dangerous-dave
+0008  varys                                 philips-labs  Public      https://github.com/philips-labs/varys
+0009  garo                                  philips-labs  Public      https://github.com/philips-labs/garo
 ..........
 ...........
 ........
