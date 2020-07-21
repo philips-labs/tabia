@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/philips-labs/tabia/lib/github"
+	"github.com/philips-labs/tabia/lib/github/graphql"
 )
 
 func TestRepositoryVisibility(t *testing.T) {
@@ -50,4 +51,39 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 	result.Reset()
 	jsonEnc.Encode(publicRepo)
 	assert.Equal(fmt.Sprintf(expectedTemplate, "public-repo", "Public"), result.String())
+}
+
+func TestMap(t *testing.T) {
+	assert := assert.New(t)
+
+	owner := graphql.Owner{Login: "philips-labs"}
+	graphqlRepositories := []graphql.Repository{
+		graphql.Repository{Owner: owner, Name: "private-repo", Description: "I am private ", IsPrivate: true},
+		graphql.Repository{Owner: owner, Name: "internal-repo", Description: "Superb inner-source stuff", IsPrivate: true},
+		graphql.Repository{Owner: owner, Name: "opensource", Description: "I'm shared with the world"},
+		graphql.Repository{Owner: owner, Name: "secret-repo", Description: " ** secrets ** ", IsPrivate: true},
+	}
+
+	privateRepos := []github.RestRepo{
+		github.RestRepo{Name: "private-repo"},
+		github.RestRepo{Name: "secret-repo"},
+	}
+	ghRepos, err := github.Map(graphqlRepositories, privateRepos)
+	if !assert.NoError(err) {
+		return
+	}
+
+	assert.Len(ghRepos, 4)
+	assert.Equal(github.Private, ghRepos[0].Visibility)
+	assert.Equal(github.Internal, ghRepos[1].Visibility)
+	assert.Equal(github.Public, ghRepos[2].Visibility)
+	assert.Equal(github.Private, ghRepos[3].Visibility)
+	assert.Equal(owner.Login, ghRepos[0].Owner)
+	assert.Equal(owner.Login, ghRepos[1].Owner)
+	assert.Equal(owner.Login, ghRepos[2].Owner)
+	assert.Equal(owner.Login, ghRepos[3].Owner)
+	assert.Equal("I am private", ghRepos[0].Description)
+	assert.Equal("Superb inner-source stuff", ghRepos[1].Description)
+	assert.Equal("I'm shared with the world", ghRepos[2].Description)
+	assert.Equal("** secrets **", ghRepos[3].Description)
 }
