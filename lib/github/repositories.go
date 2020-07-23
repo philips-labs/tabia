@@ -2,7 +2,6 @@ package github
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -10,6 +9,7 @@ import (
 
 	"golang.org/x/oauth2"
 
+	"github.com/google/go-github/v32/github"
 	"github.com/shurcooL/githubv4"
 
 	"github.com/philips-labs/tabia/lib/github/graphql"
@@ -17,6 +17,7 @@ import (
 
 type Client struct {
 	httpClient *http.Client
+	restClient *github.Client
 	*githubv4.Client
 }
 
@@ -25,8 +26,9 @@ func NewClientWithTokenAuth(token string) *Client {
 	httpClient := oauth2.NewClient(context.Background(), src)
 
 	client := githubv4.NewClient(httpClient)
+	restClient := github.NewClient(httpClient)
 
-	return &Client{httpClient, client}
+	return &Client{httpClient, restClient, client}
 }
 
 //go:generate stringer -type=Visibility
@@ -109,30 +111,23 @@ func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string
 
 	// currently the graphql api does not seem to support private vs internal.
 	// therefore we use the rest api to fetch the private repos so we can determine private vs internal in the Map function.
-	privateRepos, err := c.FetchRestRepositories(owner, "private")
+	privateRepos, err := c.FetchRestRepositories(ctx, owner, "private")
 	if err != nil {
 		return nil, err
 	}
 	return Map(repositories, privateRepos)
 }
 
-func (c *Client) FetchRestRepositories(owner, repoType string) ([]RestRepo, error) {
-	resp, err := c.httpClient.Get(fmt.Sprintf("https://api.github.com/orgs/%s/repos?type=%s", owner, repoType))
+func (c *Client) FetchRestRepositories(ctx context.Context, owner, repoType string) ([]*github.Repository, error) {
+	repos, resp, err := c.restClient.Repositories.ListByOrg(ctx, owner, &github.RepositoryListByOrgOptions{Type: repoType})
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	var privateRepos []RestRepo
-	err = json.NewDecoder(resp.Body).Decode(&privateRepos)
-	if err != nil {
-		return nil, err
-	}
-
-	return privateRepos, nil
+	return repos, nil
 }
 
-func Map(repositories []graphql.Repository, privateRepositories []RestRepo) ([]Repository, error) {
+func Map(repositories []graphql.Repository, privateRepositories []*github.Repository) ([]Repository, error) {
 	repos := make([]Repository, len(repositories))
 	for i, repo := range repositories {
 		repos[i] = Repository{
@@ -151,7 +146,7 @@ func Map(repositories []graphql.Repository, privateRepositories []RestRepo) ([]R
 		if repo.IsPrivate {
 			isPrivate := false
 			for _, privRepo := range privateRepositories {
-				if privRepo.Name == repo.Name {
+				if *privRepo.Name == repo.Name {
 					isPrivate = true
 					break
 				}
