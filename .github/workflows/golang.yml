@@ -51,6 +51,8 @@ jobs:
 
       - name: Test and Cover
         run: go test -v -race -count=1 -covermode=atomic -coverprofile=coverage.out ./...
+        env:
+          TABIA_GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload Code Coverage
         uses: codecov/codecov-action@v1.0.10
