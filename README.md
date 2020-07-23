@@ -149,3 +149,17 @@ $ bin/tabia github repositories -O philips-labs -f '{ !.IsPrivate() && !.IsInter
 ...........
 ........
 ```
+
+#### Download contents
+
+```bash
+bin/tabia github contents --repo philips-labs/tabia --file README.md --output downloads/tabia/README.md
+$ cat downloads/tabia/README.md
+# Tabia
+
+[![Go CI](https://github.com/philips-labs/tabia/workflows/Go%20CI/badge.svg)](https://github.com/philips-labs/tabia/actions)
+[![codecov](https://codecov.io/gh/philips-labs/tabia/branch/develop/graph/badge.svg?token=K2R9WOXNBm)](https://codecov.io/gh/philips-labs/tabia)
+...
+...
+..
+```
