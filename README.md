@@ -65,7 +65,7 @@ bin/tabia github --help
 bin/tabia github repositories --help
 ```
 
-### Output - Grimoirelab
+#### Output - Grimoirelab
 
 To expose the repositories in [Grimoirelab projects.json](https://github.com/chaoss/grimoirelab-sirmordred#projectsjson-) format, you can optionally provide a json file to map repositories to projects. By default the project will be mapped to the owner of the repository. Anything not matching the rules will fall back to this default.
 
@@ -95,7 +95,7 @@ To generate the output for example in a markdown format you can use the option f
 
 E.g.:
 
-```md markdown.tmpl
+```txt markdown.tmpl
 # Our repositories
 
 Our repository overview. Private/Internal repositories are marked with a __*__

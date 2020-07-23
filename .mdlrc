@@ -1,0 +1,6 @@
+style "all"
+rules "~MD013"
+show_kramdown_warnings true
+verbose true
+git_recurse true
+ignore_front_matter true

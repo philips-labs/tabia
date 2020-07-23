@@ -1,4 +1,4 @@
-name: Go CI
+name: Continuous Integration
 
 on:
   push:
@@ -97,3 +97,14 @@ jobs:
 
       - name: Logout from DockerHub Registry
         run: docker logout
+
+  documentation:
+    name: documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Lint markdown
+        uses: actionshub/markdownlint@1.2.2
