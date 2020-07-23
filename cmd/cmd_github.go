@@ -64,6 +64,26 @@ func createGithub() *cli.Command {
 					},
 				},
 			},
+			{
+				Name:      "contents",
+				Usage:     "Gets contents from a repository",
+				Action:    githubContents,
+				ArgsUsage: " ",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "repo",
+						Aliases:  []string{"R"},
+						Usage:    "fetches content of given `REPO`",
+						Required: true,
+					},
+					&cli.StringSliceFlag{
+						Name:     "file",
+						Aliases:  []string{"f"},
+						Usage:    "fetches content of given `FILE`",
+						Required: true,
+					},
+				},
+			},
 		},
 	}
 }
@@ -141,5 +161,10 @@ func githubRepositories(c *cli.Context) error {
 		w.Flush()
 	}
 
+	return nil
+}
+
+func githubContents(c *cli.Context) error {
+	fmt.Fprintln(c.App.Writer, "Not implemented.")
 	return nil
 }
