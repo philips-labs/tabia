@@ -20,4 +20,9 @@ func TestDownloadContents(t *testing.T) {
 		assert.NotEmpty(contents)
 		assert.Equal(string(readme), string(contents))
 	}
+
+	contents, err = gh.DownloadContents(context.Background(), "philips-labs", "tabia", "IamNotThere.txt")
+	if assert.Error(err) {
+		assert.EqualError(err, "No file named IamNotThere.txt found in .")
+	}
 }
