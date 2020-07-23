@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	gh "github.com/google/go-github/v32/github"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/philips-labs/tabia/lib/github"
@@ -71,9 +72,9 @@ func TestMap(t *testing.T) {
 		graphql.Repository{Owner: owner, Name: "secret-repo", Description: " ** secrets ** ", IsPrivate: true},
 	}
 
-	privateRepos := []github.RestRepo{
-		github.RestRepo{Name: "private-repo"},
-		github.RestRepo{Name: "secret-repo"},
+	privateRepos := []*gh.Repository{
+		&gh.Repository{Name: stringPointer("private-repo")},
+		&gh.Repository{Name: stringPointer("secret-repo")},
 	}
 	ghRepos, err := github.Map(graphqlRepositories, privateRepos)
 	if !assert.NoError(err) {
@@ -102,4 +103,8 @@ func TestMap(t *testing.T) {
 	assert.Equal("https://github.com/topics/golang", ghRepos[2].Topics[1].URL)
 	assert.Equal("graphql", ghRepos[2].Topics[2].Name)
 	assert.Equal("https://github.com/topics/graphql", ghRepos[2].Topics[2].URL)
+}
+
+func stringPointer(s string) *string {
+	return &s
 }
