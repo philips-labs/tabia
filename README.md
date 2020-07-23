@@ -15,6 +15,19 @@ source .env
 env | grep TABIA
 ```
 
+Install required tools:
+
+```bash
+make install-tools
+```
+
+Add your $GO_PATH/bin folder to your path to make the installed Go tools globally available.
+
+```bash
+export GO_PATH="$HOME/go"
+export PATH="$GO_PATH/bin:$PATH"
+```
+
 ## Build
 
 To build the CLI you can make use of the `build` target using `make`.
