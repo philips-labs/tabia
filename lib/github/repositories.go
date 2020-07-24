@@ -74,17 +74,22 @@ type RestRepo struct {
 }
 
 type Repository struct {
-	ID          string     `json:"id,omitempty"`
-	Name        string     `json:"name,omitempty"`
-	Description string     `json:"description,omitempty"`
-	URL         string     `json:"url,omitempty"`
-	SSHURL      string     `json:"ssh_url,omitempty"`
-	Owner       string     `json:"owner,omitempty"`
-	Visibility  Visibility `json:"visibility"`
-	CreatedAt   time.Time  `json:"created_at,omitempty"`
-	UpdatedAt   time.Time  `json:"updated_at,omitempty"`
-	PushedAt    time.Time  `json:"pushed_at,omitempty"`
-	Topics      []Topic    `json:"topics,omitempty"`
+	ID            string         `json:"id,omitempty"`
+	Name          string         `json:"name,omitempty"`
+	Description   string         `json:"description,omitempty"`
+	URL           string         `json:"url,omitempty"`
+	SSHURL        string         `json:"ssh_url,omitempty"`
+	Owner         string         `json:"owner,omitempty"`
+	Visibility    Visibility     `json:"visibility"`
+	CreatedAt     time.Time      `json:"created_at,omitempty"`
+	UpdatedAt     time.Time      `json:"updated_at,omitempty"`
+	PushedAt      time.Time      `json:"pushed_at,omitempty"`
+	Topics        []Topic        `json:"topics,omitempty"`
+	Collaborators []Collaborator `json:"collaborators,omitempty"`
+}
+
+type Collaborator struct {
+	*graphql.Collaborator
 }
 
 type Topic struct {
@@ -138,16 +143,17 @@ func Map(repositories []graphql.Repository, privateRepositories []*github.Reposi
 	repos := make([]Repository, len(repositories))
 	for i, repo := range repositories {
 		repos[i] = Repository{
-			ID:          repo.ID,
-			Name:        repo.Name,
-			Description: strings.TrimSpace(repo.Description),
-			URL:         repo.URL,
-			SSHURL:      repo.SSHURL,
-			Owner:       repo.Owner.Login,
-			CreatedAt:   repo.CreatedAt,
-			UpdatedAt:   repo.UpdatedAt,
-			PushedAt:    repo.PushedAt,
-			Topics:      mapTopics(repo.RepositoryTopics),
+			ID:            repo.ID,
+			Name:          repo.Name,
+			Description:   strings.TrimSpace(repo.Description),
+			URL:           repo.URL,
+			SSHURL:        repo.SSHURL,
+			Owner:         repo.Owner.Login,
+			CreatedAt:     repo.CreatedAt,
+			UpdatedAt:     repo.UpdatedAt,
+			PushedAt:      repo.PushedAt,
+			Topics:        mapTopics(repo.RepositoryTopics),
+			Collaborators: mapCollaborators(repo.Collaborators),
 		}
 
 		if repo.IsPrivate {
@@ -178,4 +184,12 @@ func mapTopics(topics graphql.RepositoryTopics) []Topic {
 		ghTopics[i] = Topic{Name: topic.Topic.Name, URL: fmt.Sprintf("https://github.com%s", topic.ResourcePath)}
 	}
 	return ghTopics
+}
+
+func mapCollaborators(collaborators graphql.Collaborators) []Collaborator {
+	ghCollaborators := make([]Collaborator, len(collaborators.Nodes))
+	for i, collaborator := range collaborators.Nodes {
+		ghCollaborators[i] = Collaborator{&collaborator}
+	}
+	return ghCollaborators
 }

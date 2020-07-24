@@ -65,11 +65,16 @@ func TestMap(t *testing.T) {
 			graphql.RepositoryTopic{Topic: graphql.Topic{Name: "graphql"}, ResourcePath: "/topics/graphql"},
 		},
 	}
+	collaborators := graphql.Collaborators{
+		Nodes: []graphql.Collaborator{
+			graphql.Collaborator{Name: "Marco Franssen", Login: "marcofranssen", AvatarURL: "https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4"},
+		},
+	}
 	graphqlRepositories := []graphql.Repository{
 		graphql.Repository{Owner: owner, Name: "private-repo", Description: "I am private ", IsPrivate: true},
 		graphql.Repository{Owner: owner, Name: "internal-repo", Description: "Superb inner-source stuff", IsPrivate: true},
 		graphql.Repository{Owner: owner, Name: "opensource", Description: "I'm shared with the world", RepositoryTopics: topics},
-		graphql.Repository{Owner: owner, Name: "secret-repo", Description: " ** secrets ** ", IsPrivate: true},
+		graphql.Repository{Owner: owner, Name: "secret-repo", Description: " ** secrets ** ", IsPrivate: true, Collaborators: collaborators},
 	}
 
 	privateRepos := []*gh.Repository{
@@ -103,6 +108,10 @@ func TestMap(t *testing.T) {
 	assert.Equal("https://github.com/topics/golang", ghRepos[2].Topics[1].URL)
 	assert.Equal("graphql", ghRepos[2].Topics[2].Name)
 	assert.Equal("https://github.com/topics/graphql", ghRepos[2].Topics[2].URL)
+
+	assert.Equal("Marco Franssen", ghRepos[3].Collaborators[0].Name)
+	assert.Equal("marcofranssen", ghRepos[3].Collaborators[0].Login)
+	assert.Equal("https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4", ghRepos[3].Collaborators[0].AvatarURL)
 }
 
 func stringPointer(s string) *string {
