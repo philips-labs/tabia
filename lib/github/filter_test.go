@@ -16,7 +16,7 @@ func TestReduce(t *testing.T) {
 		github.Repository{Name: "garo", Visibility: github.Public, Owner: "philips-labs"},
 		github.Repository{Name: "dct-notary-admin", Visibility: github.Public, Owner: "philips-labs"},
 		github.Repository{Name: "company-draft", Visibility: github.Internal, Owner: "philips-labs"},
-		github.Repository{Name: "top-secret", Visibility: github.Private, Owner: "philips-labs"},
+		github.Repository{Name: "top-secret", Visibility: github.Private, Owner: "philips-labs", Topics: []github.Topic{github.Topic{Name: "ip"}} },
 	}
 
 	reduced, err := github.Reduce(repos, "")
@@ -56,6 +56,12 @@ func TestReduce(t *testing.T) {
 		assert.Len(reduced, 2)
 		assert.Contains(reduced, repos[1])
 		assert.Contains(reduced, repos[2])
+	}
+
+	reduced, err = github.Reduce(repos, `{ .HasTopic("ip") }`)
+	if assert.NoError(err) {
+		assert.Len(reduced, 1)
+		assert.Contains(reduced, repos[4])
 	}
 }
 

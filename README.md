@@ -132,6 +132,7 @@ The following functions are available.
 * `func (Repository) IsPublic() bool`
 * `func (Repository) IsInternal() bool`
 * `func (Repository) IsPrivate() bool`
+* `func (Repository) HasTopic(topic string) bool`
 
 ```bash
 $ bin/tabia github repositories -O philips-labs -f '{ !.IsPrivate() && !.IsInternal() && !Contains(.Name, "terraform") }'

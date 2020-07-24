@@ -32,6 +32,17 @@ func (r Repository) IsPrivate() bool {
 	return r.Visibility == Private
 }
 
+// HasTopic indicates if a repository has a given topic.
+func (r Repository) HasTopic(topic string) bool {
+	for _, t := range r.Topics {
+		if t.Name == topic {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Reduce filters the repositories based on the given filter
 func Reduce(repositories []Repository, filter string) ([]Repository, error) {
 	if strings.TrimSpace(filter) == "" {
