@@ -18,7 +18,7 @@ func TestDownloadContents(t *testing.T) {
 	if assert.NoError(err) {
 		readme, _ := ioutil.ReadFile("../../README.md")
 		assert.NotEmpty(contents)
-		assert.Equal(string(readme), string(contents))
+		assert.Equal(string(readme[:100]), string(contents[:100]))
 	}
 
 	contents, err = gh.DownloadContents(context.Background(), "philips-labs", "tabia", "IamNotThere.txt")

@@ -3,6 +3,7 @@ package github
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/antonmedv/expr"
 )
@@ -30,6 +31,44 @@ func (r Repository) IsInternal() bool {
 // IsPrivate indicates if a repository has private visibility.
 func (r Repository) IsPrivate() bool {
 	return r.Visibility == Private
+}
+
+// HasTopic indicates if a repository has a given topic.
+func (r Repository) HasTopic(topic string) bool {
+	for _, t := range r.Topics {
+		if t.Name == topic {
+			return true
+		}
+	}
+
+	return false
+}
+
+// UpdatedSince indicates if a repository has been updated since the given date.
+// Date has to be given in RFC3339 format, e.g. `2006-01-02T15:04:05Z07:00`.
+func (r Repository) UpdatedSince(date string) bool {
+	return equalOrAfter(r.UpdatedAt, date)
+}
+
+// PushedSince indicates if a repository has been pushed since the given date.
+// Date has to be given in RFC3339 format, e.g. `2006-01-02T15:04:05Z07:00`.
+func (r Repository) PushedSince(date string) bool {
+	return equalOrAfter(r.PushedAt, date)
+}
+
+// CreatedSince indicates if a repository has been created since the given date.
+// Date has to be given in RFC3339 format, e.g. `2006-01-02T15:04:05Z07:00`.
+func (r Repository) CreatedSince(date string) bool {
+	return equalOrAfter(r.CreatedAt, date)
+}
+
+func equalOrAfter(a time.Time, date string) bool {
+	since, err := time.Parse(time.RFC3339, date)
+	if err != nil {
+		return true
+	}
+
+	return a.Equal(since) || a.After(since)
 }
 
 // Reduce filters the repositories based on the given filter
