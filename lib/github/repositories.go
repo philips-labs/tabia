@@ -3,6 +3,7 @@ package github
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -13,6 +14,7 @@ import (
 	"github.com/shurcooL/githubv4"
 
 	"github.com/philips-labs/tabia/lib/github/graphql"
+	"github.com/philips-labs/tabia/lib/transport"
 )
 
 type Client struct {
@@ -21,10 +23,15 @@ type Client struct {
 	*githubv4.Client
 }
 
-func NewClientWithTokenAuth(token string) *Client {
+func NewClientWithTokenAuth(token string, writer io.Writer) *Client {
 	src := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	httpClient := oauth2.NewClient(context.Background(), src)
-
+	if writer != nil {
+		httpClient.Transport = transport.TeeRoundTripper{
+			RoundTripper: httpClient.Transport,
+			Writer:       writer,
+		}
+	}
 	client := githubv4.NewClient(httpClient)
 	restClient := github.NewClient(httpClient)
 
