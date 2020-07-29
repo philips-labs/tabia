@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -14,6 +15,7 @@ type TeeRoundTripper struct {
 // RoundTrip executes a single HTTP transaction, returning
 // a Response for the provided Request.
 func (t TeeRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+	t.Writer.Write([]byte(fmt.Sprintf("%s: %s ", req.Method, req.URL)))
 	if req.Body != nil {
 		req.Body = struct {
 			io.Reader

@@ -34,5 +34,13 @@ func TestTeeRoundTripper(t *testing.T) {
 
 	assert.NoError(err)
 	assert.NotEmpty(writer.String())
-	assert.Equal(jsonString, writer.String())
+	assert.Equal(fmt.Sprintf("POST: %s %s", ts.URL, jsonString), writer.String())
+
+	writer.Reset()
+	_, err = client.Get(ts.URL)
+
+	assert.NoError(err)
+	assert.NotEmpty(writer.String())
+	assert.Equal(fmt.Sprintf("GET: %s ", ts.URL), writer.String())
+
 }
