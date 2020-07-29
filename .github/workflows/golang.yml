@@ -90,3 +90,6 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Logout from DockerHub Registry
+        run: docker logout
