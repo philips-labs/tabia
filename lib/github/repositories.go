@@ -102,6 +102,9 @@ func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string
 		Repositories graphql.RepositorySearch `graphql:"search(query: $query, type: REPOSITORY, first:100, after: $repoCursor)""`
 	}
 
+	// archived repositories are filtered as they give error when fetching collaborators
+	// this bug is known with Github.
+	// Also see https://github.com/shurcooL/githubv4/issues/72, on proposal for better error handling
 	variables := map[string]interface{}{
 		"query":      githubv4.String(fmt.Sprintf("org:%s archived:false", owner)),
 		"repoCursor": (*githubv4.String)(nil),
