@@ -99,11 +99,11 @@ type Topic struct {
 
 func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string) ([]Repository, error) {
 	var q struct {
-		Organization graphql.Organization `graphql:"organization(login: $owner)"`
+		Repositories graphql.RepositorySearch `graphql:"search(query: $query, type: REPOSITORY, first:100, after: $repoCursor)""`
 	}
 
 	variables := map[string]interface{}{
-		"owner":      githubv4.String(owner),
+		"query":      githubv4.String(fmt.Sprintf("org:%s archived:false", owner)),
 		"repoCursor": (*githubv4.String)(nil),
 	}
 
@@ -114,11 +114,11 @@ func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string
 			return nil, err
 		}
 
-		repositories = append(repositories, q.Organization.Repositories.Nodes...)
-		if !q.Organization.Repositories.PageInfo.HasNextPage {
+		repositories = append(repositories, repositoryEdges(q.Repositories.Edges)...)
+		if !q.Repositories.PageInfo.HasNextPage {
 			break
 		}
-		variables["repoCursor"] = githubv4.NewString(q.Organization.Repositories.PageInfo.EndCursor)
+		variables["repoCursor"] = githubv4.NewString(q.Repositories.PageInfo.EndCursor)
 	}
 
 	// currently the graphql api does not seem to support private vs internal.
@@ -192,4 +192,12 @@ func mapCollaborators(collaborators graphql.Collaborators) []Collaborator {
 		ghCollaborators[i] = Collaborator{&collaborator}
 	}
 	return ghCollaborators
+}
+
+func repositoryEdges(edges []graphql.Edge) []graphql.Repository {
+	var repositories []graphql.Repository
+	for _, edge := range edges {
+		repositories = append(repositories, edge.Node.Repository)
+	}
+	return repositories
 }
