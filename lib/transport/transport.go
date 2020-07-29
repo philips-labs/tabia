@@ -11,6 +11,8 @@ type TeeRoundTripper struct {
 	Writer io.Writer
 }
 
+// RoundTrip executes a single HTTP transaction, returning
+// a Response for the provided Request.
 func (t TeeRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	if req.Body != nil {
 		req.Body = struct {
