@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -27,6 +28,10 @@ func createGithub() *cli.Command {
 				Usage:    "Calls the api using the given `TOKEN`",
 				EnvVars:  []string{"TABIA_GITHUB_TOKEN"},
 				Required: true,
+			},
+			&cli.BoolFlag{
+				Name:  "verbose",
+				Usage: "Adds verbose logging",
 			},
 		},
 		Subcommands: []*cli.Command{
@@ -96,12 +101,24 @@ func createGithub() *cli.Command {
 	}
 }
 
+func newGithubClient(c *cli.Context) *github.Client {
+	verbose := c.Bool("verbose")
+	token := c.String("token")
+
+	var ghWriter io.Writer
+	if verbose {
+		ghWriter = c.App.Writer
+	}
+
+	return github.NewClientWithTokenAuth(token, ghWriter)
+}
+
 func githubRepositories(c *cli.Context) error {
 	owners := c.StringSlice("owner")
 	format := c.String("format")
 	filter := c.String("filter")
 
-	client := github.NewClientWithTokenAuth(os.Getenv("TABIA_GITHUB_TOKEN"))
+	client := newGithubClient(c)
 	ctx, cancel := context.WithCancel(c.Context)
 	defer cancel()
 
@@ -177,7 +194,7 @@ func githubContents(c *cli.Context) error {
 	filePath := c.String("file")
 	output := c.Path("output")
 
-	client := github.NewClientWithTokenAuth(os.Getenv("TABIA_GITHUB_TOKEN"))
+	client := newGithubClient(c)
 	ctx, cancel := context.WithCancel(c.Context)
 	defer cancel()
 

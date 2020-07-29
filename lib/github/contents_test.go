@@ -13,7 +13,7 @@ import (
 
 func TestDownloadContents(t *testing.T) {
 	assert := assert.New(t)
-	gh := github.NewClientWithTokenAuth(os.Getenv("TABIA_GITHUB_TOKEN"))
+	gh := github.NewClientWithTokenAuth(os.Getenv("TABIA_GITHUB_TOKEN"), nil)
 	contents, err := gh.DownloadContents(context.Background(), "philips-labs", "tabia", "README.md")
 	if assert.NoError(err) {
 		readme, _ := ioutil.ReadFile("../../README.md")
