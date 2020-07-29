@@ -191,8 +191,8 @@ func mapTopics(topics graphql.RepositoryTopics) []Topic {
 
 func mapCollaborators(collaborators graphql.Collaborators) []Collaborator {
 	ghCollaborators := make([]Collaborator, len(collaborators.Nodes))
-	for i, collaborator := range collaborators.Nodes {
-		ghCollaborators[i] = Collaborator{&collaborator}
+	for i := range collaborators.Nodes {
+		ghCollaborators[i] = Collaborator{&collaborators.Nodes[i]}
 	}
 	return ghCollaborators
 }

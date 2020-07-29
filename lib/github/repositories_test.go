@@ -68,6 +68,7 @@ func TestMap(t *testing.T) {
 	collaborators := graphql.Collaborators{
 		Nodes: []graphql.Collaborator{
 			graphql.Collaborator{Name: "Marco Franssen", Login: "marcofranssen", AvatarURL: "https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4"},
+			graphql.Collaborator{Name: "John Doe", Login: "johndoe", AvatarURL: "https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4"},
 		},
 	}
 	graphqlRepositories := []graphql.Repository{
@@ -109,9 +110,14 @@ func TestMap(t *testing.T) {
 	assert.Equal("graphql", ghRepos[2].Topics[2].Name)
 	assert.Equal("https://github.com/topics/graphql", ghRepos[2].Topics[2].URL)
 
+	assert.Len(ghRepos[3].Collaborators, 2)
 	assert.Equal("Marco Franssen", ghRepos[3].Collaborators[0].Name)
 	assert.Equal("marcofranssen", ghRepos[3].Collaborators[0].Login)
 	assert.Equal("https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4", ghRepos[3].Collaborators[0].AvatarURL)
+
+	assert.Equal("John Doe", ghRepos[3].Collaborators[1].Name)
+	assert.Equal("johndoe", ghRepos[3].Collaborators[1].Login)
+	assert.Equal("https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4", ghRepos[3].Collaborators[1].AvatarURL)
 }
 
 func stringPointer(s string) *string {
