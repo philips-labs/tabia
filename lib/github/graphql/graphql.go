@@ -27,7 +27,7 @@ type Repository struct {
 	UpdatedAt        time.Time        `json:"updated_at,omitempty"`
 	PushedAt         time.Time        `json:"pushed_at,omitempty"`
 	RepositoryTopics RepositoryTopics `graphql:"repositoryTopics(first: 25)" json:"repository_topics,omitempty"`
-	Collaborators    Collaborators    `graphql:"collaborators(first: 15)" json:"collaborators,omitempty"`
+	Collaborators    Collaborators    `graphql:"collaborators(first: 15, affiliation: DIRECT)" json:"collaborators,omitempty"`
 }
 
 type RepositoryTopics struct {
