@@ -16,6 +16,7 @@ func TestReduce(t *testing.T) {
 	repos := []github.Repository{
 		github.Repository{
 			Name: "tabia", Visibility: github.Public, Owner: "philips-labs",
+			Languages: []github.Language{github.Language{Name: "Go"}},
 			CreatedAt: time.Now().Add(-24 * time.Hour),
 			PushedAt:  time.Now().Add(-24 * time.Hour),
 			UpdatedAt: time.Now().Add(-24 * time.Hour),
@@ -90,6 +91,12 @@ func TestReduce(t *testing.T) {
 	if assert.NoError(err) {
 		assert.Len(reduced, 1)
 		assert.Contains(reduced, repos[4])
+	}
+
+	reduced, err = github.Reduce(repos, `{ .HasLanguage("go") }`)
+	if assert.NoError(err) {
+		assert.Len(reduced, 1)
+		assert.Contains(reduced, repos[0])
 	}
 
 	since := time.Now().Add(-25 * time.Hour).Format(time.RFC3339)

@@ -44,6 +44,17 @@ func (r Repository) HasTopic(topic string) bool {
 	return false
 }
 
+// HasLanguage indicates if a repository has a given language.
+func (r Repository) HasLanguage(language string) bool {
+	for _, l := range r.Languages {
+		if strings.ToLower(l.Name) == strings.ToLower(language) {
+			return true
+		}
+	}
+
+	return false
+}
+
 // UpdatedSince indicates if a repository has been updated since the given date.
 // Date has to be given in RFC3339 format, e.g. `2006-01-02T15:04:05Z07:00`.
 func (r Repository) UpdatedSince(date string) bool {
