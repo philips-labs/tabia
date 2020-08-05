@@ -85,6 +85,7 @@ type Repository struct {
 	UpdatedAt     time.Time      `json:"updated_at,omitempty"`
 	PushedAt      time.Time      `json:"pushed_at,omitempty"`
 	Topics        []Topic        `json:"topics,omitempty"`
+	Languages     []Language     `json:"languages,omitempty"`
 	Collaborators []Collaborator `json:"collaborators,omitempty"`
 }
 
@@ -95,6 +96,12 @@ type Collaborator struct {
 type Topic struct {
 	Name string `json:"name,omitempty"`
 	URL  string `json:"url,omitempty"`
+}
+
+type Language struct {
+	Name  string `json:"name,omitempty"`
+	Color string `json:"color,omitempty"`
+	Size  int    `json:"size,omitempty"`
 }
 
 func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string) ([]Repository, error) {
@@ -156,6 +163,7 @@ func Map(repositories []graphql.Repository, privateRepositories []*github.Reposi
 			UpdatedAt:     repo.UpdatedAt,
 			PushedAt:      repo.PushedAt,
 			Topics:        mapTopics(repo.RepositoryTopics),
+			Languages:     mapLanguages(repo.Languages),
 			Collaborators: mapCollaborators(repo.Collaborators),
 		}
 
@@ -187,6 +195,14 @@ func mapTopics(topics graphql.RepositoryTopics) []Topic {
 		ghTopics[i] = Topic{Name: topic.Topic.Name, URL: fmt.Sprintf("https://github.com%s", topic.ResourcePath)}
 	}
 	return ghTopics
+}
+
+func mapLanguages(languages graphql.Languages) []Language {
+	ghLanguages := make([]Language, len(languages.Edges))
+	for i, lang := range languages.Edges {
+		ghLanguages[i] = Language{Name: lang.Node.Name, Size: lang.Size, Color: lang.Node.Color}
+	}
+	return ghLanguages
 }
 
 func mapCollaborators(collaborators graphql.Collaborators) []Collaborator {
