@@ -28,6 +28,21 @@ type Repository struct {
 	PushedAt         time.Time        `json:"pushed_at,omitempty"`
 	RepositoryTopics RepositoryTopics `graphql:"repositoryTopics(first: 25)" json:"repository_topics,omitempty"`
 	Collaborators    Collaborators    `graphql:"collaborators(first: 15, affiliation: DIRECT)" json:"collaborators,omitempty"`
+	Languages        Languages        `graphql:"languages(first: 10, orderBy: {field: SIZE, direction: DESC})" json:"languages,omitempty"`
+}
+
+type Languages struct {
+	Edges []LanguageEdge `json:"edges,omitempty"`
+}
+
+type LanguageEdge struct {
+	Size int
+	Node LanguageNode
+}
+
+type LanguageNode struct {
+	Name  string
+	Color string
 }
 
 type RepositoryTopics struct {

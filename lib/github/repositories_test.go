@@ -71,11 +71,17 @@ func TestMap(t *testing.T) {
 			graphql.Collaborator{Name: "John Doe", Login: "johndoe", AvatarURL: "https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4"},
 		},
 	}
+	languages := graphql.Languages{
+		Edges: []graphql.LanguageEdge{
+			graphql.LanguageEdge{Node: graphql.LanguageNode{Name: "Go", Color: "#cc0000"}, Size: 3000},
+			graphql.LanguageEdge{Node: graphql.LanguageNode{Name: "JavaScript", Color: "#0000cc"}, Size: 532},
+		},
+	}
 	graphqlRepositories := []graphql.Repository{
 		graphql.Repository{Owner: owner, Name: "private-repo", Description: "I am private ", IsPrivate: true},
 		graphql.Repository{Owner: owner, Name: "internal-repo", Description: "Superb inner-source stuff", IsPrivate: true},
 		graphql.Repository{Owner: owner, Name: "opensource", Description: "I'm shared with the world", RepositoryTopics: topics},
-		graphql.Repository{Owner: owner, Name: "secret-repo", Description: " ** secrets ** ", IsPrivate: true, Collaborators: collaborators},
+		graphql.Repository{Owner: owner, Name: "secret-repo", Description: " ** secrets ** ", IsPrivate: true, Collaborators: collaborators, Languages: languages},
 	}
 
 	privateRepos := []*gh.Repository{
@@ -118,6 +124,14 @@ func TestMap(t *testing.T) {
 	assert.Equal("John Doe", ghRepos[3].Collaborators[1].Name)
 	assert.Equal("johndoe", ghRepos[3].Collaborators[1].Login)
 	assert.Equal("https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4", ghRepos[3].Collaborators[1].AvatarURL)
+
+	assert.Len(ghRepos[3].Languages, 2)
+	assert.Equal("Go", ghRepos[3].Languages[0].Name)
+	assert.Equal(3000, ghRepos[3].Languages[0].Size)
+	assert.Equal("#cc0000", ghRepos[3].Languages[0].Color)
+	assert.Equal("JavaScript", ghRepos[3].Languages[1].Name)
+	assert.Equal(532, ghRepos[3].Languages[1].Size)
+	assert.Equal("#0000cc", ghRepos[3].Languages[1].Color)
 }
 
 func stringPointer(s string) *string {
