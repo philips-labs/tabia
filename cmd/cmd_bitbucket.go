@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"text/tabwriter"
 
 	"github.com/urfave/cli/v2"
@@ -29,6 +30,10 @@ func createBitbucket() *cli.Command {
 				Usage:    "Calls the api using the given `TOKEN`",
 				EnvVars:  []string{"TABIA_BITBUCKET_TOKEN"},
 				Required: true,
+			},
+			&cli.BoolFlag{
+				Name:  "verbose",
+				Usage: "Adds verbose logging",
 			},
 		},
 		Subcommands: []*cli.Command{
@@ -72,12 +77,22 @@ func createBitbucket() *cli.Command {
 	}
 }
 
-func bitbucketProjects(c *cli.Context) error {
+func newBitbucketClient(c *cli.Context) *bitbucket.Client {
 	api := c.String("api")
+	verbose := c.Bool("verbose")
 	token := c.String("token")
+
+	var bbWriter io.Writer
+	if verbose {
+		bbWriter = c.App.Writer
+	}
+	return bitbucket.NewClientWithTokenAuth(api, token, bbWriter)
+}
+
+func bitbucketProjects(c *cli.Context) error {
 	format := c.String("format")
 
-	bb := bitbucket.NewClientWithTokenAuth(api, token)
+	bb := newBitbucketClient(c)
 	projects := make([]bitbucket.Project, 0)
 	page := 0
 	for {
@@ -111,12 +126,10 @@ func bitbucketProjects(c *cli.Context) error {
 }
 
 func bitbucketRepositories(c *cli.Context) error {
-	api := c.String("api")
-	token := c.String("token")
 	format := c.String("format")
 	projects := c.StringSlice("projects")
 
-	bb := bitbucket.NewClientWithTokenAuth(api, token)
+	bb := newBitbucketClient(c)
 
 	results := make([]bitbucket.Repository, 0)
 	for _, project := range projects {

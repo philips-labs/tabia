@@ -7,6 +7,8 @@ import (
 	"net/http"
 
 	"golang.org/x/net/proxy"
+
+	"github.com/philips-labs/tabia/lib/transport"
 )
 
 type PagedResponse struct {
@@ -46,11 +48,18 @@ type TokenAuth struct {
 	Token string
 }
 
-func NewClientWithBasicAuth(endpoint, username, password string) *Client {
+func NewClientWithBasicAuth(endpoint, username, password string, writer io.Writer) *Client {
+	httpClient := new(http.Client)
+	if writer != nil {
+		httpClient.Transport = transport.TeeRoundTripper{
+			RoundTripper: new(http.Transport),
+			Writer:       writer,
+		}
+	}
 	c := &Client{
 		baseEndpoint: endpoint,
 		Auth:         BasicAuth{Username: username, Password: password},
-		HttpClient:   new(http.Client),
+		HttpClient:   httpClient,
 	}
 
 	c.Projects = Projects{c}
@@ -58,11 +67,18 @@ func NewClientWithBasicAuth(endpoint, username, password string) *Client {
 	return c
 }
 
-func NewClientWithTokenAuth(endpoint, token string) *Client {
+func NewClientWithTokenAuth(endpoint, token string, writer io.Writer) *Client {
+	httpClient := new(http.Client)
+	if writer != nil {
+		httpClient.Transport = transport.TeeRoundTripper{
+			RoundTripper: new(http.Transport),
+			Writer:       writer,
+		}
+	}
 	c := &Client{
 		baseEndpoint: endpoint,
 		Auth:         TokenAuth{Token: token},
-		HttpClient:   new(http.Client),
+		HttpClient:   httpClient,
 	}
 	c.Projects = Projects{c}
 	c.Repositories = Repositories{c}
