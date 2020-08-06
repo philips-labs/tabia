@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     name: Continuous Integration
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
 
     strategy:
       matrix:
@@ -70,6 +71,7 @@ jobs:
     name: release
     needs: [build]
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
 
     steps:
       - name: Set up Go 1.14
