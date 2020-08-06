@@ -37,6 +37,12 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 	jsonEnc.Encode(privRepo)
 	assert.Equal(fmt.Sprintf(expectedTemplate, "private-repo", "Private"), result.String())
 
+	var unmarshalledRepo github.Repository
+	err := json.Unmarshal([]byte(result.String()), &unmarshalledRepo)
+	if assert.NoError(err) {
+		assert.Equal(github.Private, unmarshalledRepo.Visibility)
+	}
+
 	internalRepo := github.Repository{
 		Name:       "internal-repo",
 		Visibility: github.Internal,
@@ -45,6 +51,11 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 	jsonEnc.Encode(internalRepo)
 	assert.Equal(fmt.Sprintf(expectedTemplate, "internal-repo", "Internal"), result.String())
 
+	err = json.Unmarshal([]byte(result.String()), &unmarshalledRepo)
+	if assert.NoError(err) {
+		assert.Equal(github.Internal, unmarshalledRepo.Visibility)
+	}
+
 	publicRepo := github.Repository{
 		Name:       "public-repo",
 		Visibility: github.Public,
@@ -52,6 +63,11 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 	result.Reset()
 	jsonEnc.Encode(publicRepo)
 	assert.Equal(fmt.Sprintf(expectedTemplate, "public-repo", "Public"), result.String())
+
+	err = json.Unmarshal([]byte(result.String()), &unmarshalledRepo)
+	if assert.NoError(err) {
+		assert.Equal(github.Public, unmarshalledRepo.Visibility)
+	}
 }
 
 func TestMap(t *testing.T) {

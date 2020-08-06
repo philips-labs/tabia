@@ -3,40 +3,14 @@ package github
 import (
 	"context"
 	"fmt"
-	"io"
-	"net/http"
 	"strings"
 	"time"
-
-	"golang.org/x/oauth2"
 
 	"github.com/google/go-github/v32/github"
 	"github.com/shurcooL/githubv4"
 
 	"github.com/philips-labs/tabia/lib/github/graphql"
-	"github.com/philips-labs/tabia/lib/transport"
 )
-
-type Client struct {
-	httpClient *http.Client
-	restClient *github.Client
-	*githubv4.Client
-}
-
-func NewClientWithTokenAuth(token string, writer io.Writer) *Client {
-	src := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-	httpClient := oauth2.NewClient(context.Background(), src)
-	if writer != nil {
-		httpClient.Transport = transport.TeeRoundTripper{
-			RoundTripper: httpClient.Transport,
-			Writer:       writer,
-		}
-	}
-	client := githubv4.NewClient(httpClient)
-	restClient := github.NewClient(httpClient)
-
-	return &Client{httpClient, restClient, client}
-}
 
 //go:generate stringer -type=Visibility
 
@@ -128,6 +102,7 @@ func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string
 		if !q.Repositories.PageInfo.HasNextPage {
 			break
 		}
+
 		variables["repoCursor"] = githubv4.NewString(q.Repositories.PageInfo.EndCursor)
 	}
 
@@ -137,16 +112,28 @@ func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string
 	if err != nil {
 		return nil, err
 	}
+
 	return Map(repositories, privateRepos)
 }
 
 func (c *Client) FetchRestRepositories(ctx context.Context, owner, repoType string) ([]*github.Repository, error) {
-	repos, resp, err := c.restClient.Repositories.ListByOrg(ctx, owner, &github.RepositoryListByOrgOptions{Type: repoType})
-	if err != nil {
-		return nil, err
+	var allRepos []*github.Repository
+
+	opt := &github.RepositoryListByOrgOptions{Type: repoType}
+	for {
+		repos, resp, err := c.restClient.Repositories.ListByOrg(ctx, owner, opt)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+		allRepos = append(allRepos, repos...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opt.Page = resp.NextPage
 	}
-	defer resp.Body.Close()
-	return repos, nil
+
+	return allRepos, nil
 }
 
 func Map(repositories []graphql.Repository, privateRepositories []*github.Repository) ([]Repository, error) {
