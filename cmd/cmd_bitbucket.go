@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"html/template"
 	"io"
+	"io/ioutil"
 	"text/tabwriter"
 
 	"github.com/urfave/cli/v2"
@@ -70,6 +72,12 @@ func createBitbucket() *cli.Command {
 						Usage:       "Formats output in the given `FORMAT`",
 						EnvVars:     []string{"TABIA_OUTPUT_FORMAT"},
 						DefaultText: "",
+					},
+					&cli.PathFlag{
+						Name:      "template",
+						Aliases:   []string{"T"},
+						Usage:     "Formats output using the given `TEMPLATE`",
+						TakesFile: true,
 					},
 				},
 			},
@@ -154,6 +162,24 @@ func bitbucketRepositories(c *cli.Context) error {
 			}
 		})
 		err := output.PrintJSON(c.App.Writer, projects)
+		if err != nil {
+			return err
+		}
+	case "templated":
+		if !c.IsSet("template") {
+			return fmt.Errorf("you must specify the path to the template")
+		}
+
+		templateFile := c.Path("template")
+		tmplContent, err := ioutil.ReadFile(templateFile)
+		if err != nil {
+			return err
+		}
+		tmpl, err := template.New("repositories").Parse(string(tmplContent))
+		if err != nil {
+			return err
+		}
+		err = tmpl.Execute(c.App.Writer, results)
 		if err != nil {
 			return err
 		}
