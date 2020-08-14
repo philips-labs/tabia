@@ -9,6 +9,7 @@ import (
 
 	"github.com/philips-labs/tabia/lib/github"
 	"github.com/philips-labs/tabia/lib/grimoirelab"
+	"github.com/philips-labs/tabia/lib/shared"
 )
 
 func TestNewGithubProjectMatcherFromJSON(t *testing.T) {
@@ -54,13 +55,13 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 	repos := []github.Repository{
 		github.Repository{
 			Name:       "R1",
-			Visibility: github.Public,
+			Visibility: shared.Public,
 			URL:        "https://github.com/philips-software/logproxy",
 			Owner:      "philips-software",
 		},
 		github.Repository{
 			Name:       "R1",
-			Visibility: github.Private,
+			Visibility: shared.Private,
 			URL:        "https://github.com/philips-labs/tabia",
 			Owner:      "philips-labs",
 		},

@@ -11,15 +11,8 @@ import (
 
 	"github.com/philips-labs/tabia/lib/github"
 	"github.com/philips-labs/tabia/lib/github/graphql"
+	"github.com/philips-labs/tabia/lib/shared"
 )
-
-func TestRepositoryVisibility(t *testing.T) {
-	assert := assert.New(t)
-
-	assert.Equal("Public", github.Public.String())
-	assert.Equal("Internal", github.Internal.String())
-	assert.Equal("Private", github.Private.String())
-}
 
 func TestRepositoryVisibilityToJSON(t *testing.T) {
 	assert := assert.New(t)
@@ -32,7 +25,7 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 
 	privRepo := github.Repository{
 		Name:       "private-repo",
-		Visibility: github.Private,
+		Visibility: shared.Private,
 	}
 	jsonEnc.Encode(privRepo)
 	assert.Equal(fmt.Sprintf(expectedTemplate, "private-repo", "Private"), result.String())
@@ -40,12 +33,12 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 	var unmarshalledRepo github.Repository
 	err := json.Unmarshal([]byte(result.String()), &unmarshalledRepo)
 	if assert.NoError(err) {
-		assert.Equal(github.Private, unmarshalledRepo.Visibility)
+		assert.Equal(shared.Private, unmarshalledRepo.Visibility)
 	}
 
 	internalRepo := github.Repository{
 		Name:       "internal-repo",
-		Visibility: github.Internal,
+		Visibility: shared.Internal,
 	}
 	result.Reset()
 	jsonEnc.Encode(internalRepo)
@@ -53,12 +46,12 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 
 	err = json.Unmarshal([]byte(result.String()), &unmarshalledRepo)
 	if assert.NoError(err) {
-		assert.Equal(github.Internal, unmarshalledRepo.Visibility)
+		assert.Equal(shared.Internal, unmarshalledRepo.Visibility)
 	}
 
 	publicRepo := github.Repository{
 		Name:       "public-repo",
-		Visibility: github.Public,
+		Visibility: shared.Public,
 	}
 	result.Reset()
 	jsonEnc.Encode(publicRepo)
@@ -66,7 +59,7 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 
 	err = json.Unmarshal([]byte(result.String()), &unmarshalledRepo)
 	if assert.NoError(err) {
-		assert.Equal(github.Public, unmarshalledRepo.Visibility)
+		assert.Equal(shared.Public, unmarshalledRepo.Visibility)
 	}
 }
 
@@ -110,10 +103,10 @@ func TestMap(t *testing.T) {
 	}
 
 	assert.Len(ghRepos, 4)
-	assert.Equal(github.Private, ghRepos[0].Visibility)
-	assert.Equal(github.Internal, ghRepos[1].Visibility)
-	assert.Equal(github.Public, ghRepos[2].Visibility)
-	assert.Equal(github.Private, ghRepos[3].Visibility)
+	assert.Equal(shared.Private, ghRepos[0].Visibility)
+	assert.Equal(shared.Internal, ghRepos[1].Visibility)
+	assert.Equal(shared.Public, ghRepos[2].Visibility)
+	assert.Equal(shared.Private, ghRepos[3].Visibility)
 
 	assert.Equal(owner.Login, ghRepos[0].Owner)
 	assert.Equal(owner.Login, ghRepos[1].Owner)

@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/antonmedv/expr"
+
+	"github.com/philips-labs/tabia/lib/shared"
 )
 
 // RepositoryFilterEnv filter environment for repositories
@@ -30,17 +32,17 @@ func (RepositoryFilterEnv) Contains(s, substring string) bool {
 
 // IsPublic indicates if a repository has public visibility.
 func (r Repository) IsPublic() bool {
-	return r.Visibility == Public
+	return r.Visibility == shared.Public
 }
 
 // IsInternal indicates if a repository has internal visibility.
 func (r Repository) IsInternal() bool {
-	return r.Visibility == Internal
+	return r.Visibility == shared.Internal
 }
 
 // IsPrivate indicates if a repository has private visibility.
 func (r Repository) IsPrivate() bool {
-	return r.Visibility == Private
+	return r.Visibility == shared.Private
 }
 
 // HasTopic indicates if a repository has a given topic.
