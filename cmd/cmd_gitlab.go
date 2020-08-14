@@ -1,12 +1,16 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"text/tabwriter"
 
 	"github.com/urfave/cli/v2"
 
 	"github.com/philips-labs/tabia/lib/gitlab"
+	"github.com/philips-labs/tabia/lib/output"
 )
 
 func createGitlab() *cli.Command {
@@ -38,6 +42,21 @@ func createGitlab() *cli.Command {
 				Name:   "repositories",
 				Usage:  "display insights on repositories",
 				Action: gitlabRepositories,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:        "format",
+						Aliases:     []string{"F"},
+						Usage:       "Formats output in the given `FORMAT`",
+						EnvVars:     []string{"TABIA_OUTPUT_FORMAT"},
+						DefaultText: "",
+					},
+					&cli.PathFlag{
+						Name:      "template",
+						Aliases:   []string{"T"},
+						Usage:     "Formats output using the given `TEMPLATE`",
+						TakesFile: true,
+					},
+				},
 			},
 		},
 	}
@@ -57,11 +76,45 @@ func newGitlabClient(c *cli.Context) (*gitlab.Client, error) {
 }
 
 func gitlabRepositories(c *cli.Context) error {
+	format := c.String("format")
+
 	client, err := newGitlabClient(c)
 	if err != nil {
 		return err
 	}
-	fmt.Fprintln(c.App.Writer, client.BaseURL())
+	ctx, cancel := context.WithCancel(c.Context)
+	defer cancel()
+
+	repos, err := client.ListRepositories(ctx)
+	if err != nil {
+		return err
+	}
+
+	switch format {
+	case "json":
+		output.PrintJSON(c.App.Writer, repos)
+	case "templated":
+		if !c.IsSet("template") {
+			return fmt.Errorf("you must specify the path to the template")
+		}
+
+		templateFile := c.Path("template")
+		tmplContent, err := ioutil.ReadFile(templateFile)
+		if err != nil {
+			return err
+		}
+		err = output.PrintUsingTemplate(c.App.Writer, tmplContent, repos)
+		if err != nil {
+			return err
+		}
+	default:
+		w := tabwriter.NewWriter(c.App.Writer, 3, 0, 2, ' ', tabwriter.TabIndent)
+		fmt.Fprintln(w, " \tID\tName\tVisibility\tURL")
+		for i, repo := range repos {
+			fmt.Fprintf(w, "%04d\t%d\t%s\t%s\t%s\n", i+1, repo.ID, repo.Name, repo.Visibility, repo.URL)
+		}
+		w.Flush()
+	}
 
 	return nil
 }
