@@ -109,9 +109,9 @@ func gitlabRepositories(c *cli.Context) error {
 		}
 	default:
 		w := tabwriter.NewWriter(c.App.Writer, 3, 0, 2, ' ', tabwriter.TabIndent)
-		fmt.Fprintln(w, " \tID\tName\tVisibility\tURL")
+		fmt.Fprintln(w, " \tID\tOwner\tName\tVisibility\tURL")
 		for i, repo := range repos {
-			fmt.Fprintf(w, "%04d\t%d\t%s\t%s\t%s\n", i+1, repo.ID, repo.Name, repo.Visibility, repo.URL)
+			fmt.Fprintf(w, "%04d\t%d\t%s\t%s\t%s\t%s\n", i+1, repo.ID, repo.Owner, repo.Name, repo.Visibility, repo.URL)
 		}
 		w.Flush()
 	}
