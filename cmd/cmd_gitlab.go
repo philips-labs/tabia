@@ -2,8 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/urfave/cli/v2"
+
+	"github.com/philips-labs/tabia/lib/gitlab"
 )
 
 func createGitlab() *cli.Command {
@@ -40,13 +43,25 @@ func createGitlab() *cli.Command {
 	}
 }
 
-func gitlabRepositories(c *cli.Context) error {
+func newGitlabClient(c *cli.Context) (*gitlab.Client, error) {
 	instance := c.String("instance")
+	verbose := c.Bool("verbose")
 	token := c.String("token")
 
-	fmt.Fprintln(c.App.Writer, "Not implemented yet.")
-	fmt.Fprintf(c.App.Writer, "token: %s\n", token)
-	fmt.Fprintf(c.App.Writer, "instance: %s\n", instance)
+	var ghWriter io.Writer
+	if verbose {
+		ghWriter = c.App.Writer
+	}
+
+	return gitlab.NewClientWithTokenAuth(instance, token, ghWriter)
+}
+
+func gitlabRepositories(c *cli.Context) error {
+	client, err := newGitlabClient(c)
+	if err != nil {
+		return err
+	}
+	fmt.Fprintln(c.App.Writer, client.BaseURL())
 
 	return nil
 }

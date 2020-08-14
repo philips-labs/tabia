@@ -6,10 +6,12 @@ require (
 	github.com/antonmedv/expr v1.8.9
 	github.com/google/go-github/v32 v32.1.0
 	github.com/goreleaser/goreleaser v0.145.0
+	github.com/hashicorp/go-cleanhttp v0.5.1
 	github.com/shurcooL/githubv4 v0.0.0-20200928013246-d292edc3691b
 	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/urfave/cli/v2 v2.2.0
+	github.com/xanzy/go-gitlab v0.38.1
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
 	golang.org/x/mod v0.3.1-0.20200828183125-ce943fd02449 // indirect
 	golang.org/x/net v0.0.0-20200927032502-5d4f70055728
