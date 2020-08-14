@@ -14,6 +14,7 @@ type Repository struct {
 	ID             int               `json:"id,omitempty"`
 	Name           string            `json:"name,omitempty"`
 	Description    string            `json:"description,omitempty"`
+	Owner          string            `json:"owner,omitempty"`
 	URL            string            `json:"url,omitempty"`
 	SSHURL         string            `json:"sshurl,omitempty"`
 	CreatedAt      *time.Time        `json:"created_at,omitempty"`
@@ -53,6 +54,7 @@ func Map(projects []*gitlab.Project) []Repository {
 			ID:             project.ID,
 			Name:           project.Name,
 			Description:    strings.TrimSpace(project.Description),
+			Owner:          mapOwner(project.Owner),
 			URL:            project.WebURL,
 			SSHURL:         project.SSHURLToRepo,
 			CreatedAt:      project.CreatedAt,
@@ -61,6 +63,13 @@ func Map(projects []*gitlab.Project) []Repository {
 		}
 	}
 	return repos
+}
+
+func mapOwner(owner *gitlab.User) string {
+	if owner != nil {
+		return owner.Name
+	}
+	return ""
 }
 
 func boolPointer(b bool) *bool {
