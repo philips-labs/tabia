@@ -77,3 +77,18 @@ func Reduce(repositories []Repository, filter string) ([]Repository, error) {
 	}
 	return repos, nil
 }
+
+// ConvertFiltersToListProjectOptions converts the filter expressions to ListProjectOptions
+func ConvertFiltersToListProjectOptions(filter string) []ListProjectOptionsFunc {
+	var projectsFilters []ListProjectOptionsFunc
+
+	if strings.Contains(filter, ".IsPublic()") {
+		projectsFilters = append(projectsFilters, WithPublicVisibility)
+	} else if strings.Contains(filter, ".IsInternal()") {
+		projectsFilters = append(projectsFilters, WithInternalVisibility)
+	} else if strings.Contains(filter, ".IsPrivate()") {
+		projectsFilters = append(projectsFilters, WithPrivateVisibility)
+	}
+
+	return projectsFilters
+}

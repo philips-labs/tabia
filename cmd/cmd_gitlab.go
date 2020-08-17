@@ -91,7 +91,8 @@ func gitlabRepositories(c *cli.Context) error {
 	ctx, cancel := context.WithCancel(c.Context)
 	defer cancel()
 
-	repos, err := client.ListRepositories(ctx)
+	filters := gitlab.ConvertFiltersToListProjectOptions(filter)
+	repos, err := client.ListRepositories(ctx, filters...)
 	if err != nil {
 		return err
 	}
