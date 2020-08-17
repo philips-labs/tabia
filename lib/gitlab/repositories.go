@@ -22,13 +22,45 @@ type Repository struct {
 	Visibility     shared.Visibility `json:"visibility,omitempty"`
 }
 
-func (c *Client) ListRepositories(ctx context.Context) ([]Repository, error) {
-	opt := &gitlab.ListProjectsOptions{
-		ListOptions: gitlab.ListOptions{
-			PerPage: 100,
-			Page:    1,
-		},
+type ListProjectOptionsFunc func(*gitlab.ListProjectsOptions)
+
+func WithPrivateVisibility(opt *gitlab.ListProjectsOptions) {
+	vis := gitlab.PrivateVisibility
+	opt.Visibility = &vis
+}
+
+func WithPublicVisibility(opt *gitlab.ListProjectsOptions) {
+	vis := gitlab.PublicVisibility
+	opt.Visibility = &vis
+}
+
+func WithInternalVisibility(opt *gitlab.ListProjectsOptions) {
+	vis := gitlab.InternalVisibility
+	opt.Visibility = &vis
+}
+
+func WithPaging(page, items int) gitlab.ListOptions {
+	return gitlab.ListOptions{
+		PerPage: items,
+		Page:    page,
 	}
+}
+
+func BuildListProjectsOptions(optionsFuncs ...ListProjectOptionsFunc) *gitlab.ListProjectsOptions {
+	opt := &gitlab.ListProjectsOptions{
+		ListOptions: WithPaging(1, 100),
+	}
+
+	for _, optionFunc := range optionsFuncs {
+		optionFunc(opt)
+	}
+
+	return opt
+}
+
+func (c *Client) ListRepositories(ctx context.Context, optionsFuncs ...ListProjectOptionsFunc) ([]Repository, error) {
+	opt := BuildListProjectsOptions(optionsFuncs...)
+
 	var repos []Repository
 	for {
 		projects, resp, err := c.Projects.ListProjects(opt, gitlab.WithContext(ctx))

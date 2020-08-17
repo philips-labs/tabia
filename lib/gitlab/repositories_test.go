@@ -20,3 +20,39 @@ func TestMap(t *testing.T) {
 
 	assert.Len(repos, len(projects))
 }
+
+func TestBuildListProjectsOptions(t *testing.T) {
+	assert := assert.New(t)
+
+	opt := gitlab.BuildListProjectsOptions()
+	assert.Equal(gl.ListOptions{
+		PerPage: 100,
+		Page:    1,
+	}, opt.ListOptions)
+	assert.Equal((*gl.VisibilityValue)(nil), opt.Visibility)
+
+	opt = gitlab.BuildListProjectsOptions(gitlab.WithPublicVisibility)
+	assert.Equal(gl.ListOptions{
+		PerPage: 100,
+		Page:    1,
+	}, opt.ListOptions)
+	assert.Equal(visibilityValuePtr(gl.PublicVisibility), opt.Visibility)
+
+	opt = gitlab.BuildListProjectsOptions(gitlab.WithInternalVisibility)
+	assert.Equal(gl.ListOptions{
+		PerPage: 100,
+		Page:    1,
+	}, opt.ListOptions)
+	assert.Equal(visibilityValuePtr(gl.InternalVisibility), opt.Visibility)
+
+	opt = gitlab.BuildListProjectsOptions(gitlab.WithPrivateVisibility)
+	assert.Equal(gl.ListOptions{
+		PerPage: 100,
+		Page:    1,
+	}, opt.ListOptions)
+	assert.Equal(visibilityValuePtr(gl.PrivateVisibility), opt.Visibility)
+}
+
+func visibilityValuePtr(v gl.VisibilityValue) *gl.VisibilityValue {
+	return &v
+}
