@@ -56,6 +56,11 @@ func createGitlab() *cli.Command {
 						Usage:     "Formats output using the given `TEMPLATE`",
 						TakesFile: true,
 					},
+					&cli.StringFlag{
+						Name:    "filter",
+						Aliases: []string{"f"},
+						Usage:   "filters repositories based on the given `EXPRESSION`",
+					},
 				},
 			},
 		},
@@ -77,6 +82,7 @@ func newGitlabClient(c *cli.Context) (*gitlab.Client, error) {
 
 func gitlabRepositories(c *cli.Context) error {
 	format := c.String("format")
+	filter := c.String("filter")
 
 	client, err := newGitlabClient(c)
 	if err != nil {
@@ -90,9 +96,14 @@ func gitlabRepositories(c *cli.Context) error {
 		return err
 	}
 
+	filtered, err := gitlab.Reduce(repos, filter)
+	if err != nil {
+		return err
+	}
+
 	switch format {
 	case "json":
-		output.PrintJSON(c.App.Writer, repos)
+		output.PrintJSON(c.App.Writer, filtered)
 	case "templated":
 		if !c.IsSet("template") {
 			return fmt.Errorf("you must specify the path to the template")
@@ -103,14 +114,14 @@ func gitlabRepositories(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		err = output.PrintUsingTemplate(c.App.Writer, tmplContent, repos)
+		err = output.PrintUsingTemplate(c.App.Writer, tmplContent, filtered)
 		if err != nil {
 			return err
 		}
 	default:
 		w := tabwriter.NewWriter(c.App.Writer, 3, 0, 2, ' ', tabwriter.TabIndent)
 		fmt.Fprintln(w, " \tID\tOwner\tName\tVisibility\tURL")
-		for i, repo := range repos {
+		for i, repo := range filtered {
 			fmt.Fprintf(w, "%04d\t%d\t%s\t%s\t%s\t%s\n", i+1, repo.ID, repo.Owner, repo.Name, repo.Visibility, repo.URL)
 		}
 		w.Flush()
