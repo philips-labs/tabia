@@ -105,6 +105,20 @@ func gitlabRepositories(c *cli.Context) error {
 	switch format {
 	case "json":
 		output.PrintJSON(c.App.Writer, filtered)
+		// case "grimoirelab":
+		//  projects := grimoirelab.ConvertGitlabToProjectsJSON(
+		//      filtered,
+		//      func(repo github.Repository) grimoirelab.Metadata {
+		//          return grimoirelab.Metadata{
+		//              "title":   repo.Owner,
+		//              "program": "One Codebase",
+		//          }
+		//      },
+		//      projectMatcher)
+		//  err = output.PrintJSON(c.App.Writer, projects)
+		//  if err != nil {
+		//      return err
+		//  }
 	case "templated":
 		if !c.IsSet("template") {
 			return fmt.Errorf("you must specify the path to the template")
