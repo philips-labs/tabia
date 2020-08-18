@@ -1,6 +1,7 @@
 package shared_test
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -30,4 +31,19 @@ func TestVisibilityFromText(t *testing.T) {
 	assert.Equal(shared.Private, shared.VisibilityFromText("private"))
 	assert.Equal(shared.Private, shared.VisibilityFromText("PRIVATE"))
 	assert.Equal(shared.Private, shared.VisibilityFromText("Private"))
+}
+
+func TestVisibilityMarshalling(t *testing.T) {
+	assert := assert.New(t)
+	blob := `["Public","Internal","Private"]`
+
+	var visibilities []shared.Visibility
+
+	err := json.Unmarshal([]byte(blob), &visibilities)
+	if assert.NoError(err) {
+		newBlob, err := json.Marshal(visibilities)
+		if assert.NoError(err) {
+			assert.Equal(blob, string(newBlob))
+		}
+	}
 }
