@@ -16,19 +16,22 @@ type Owner struct {
 }
 
 type Repository struct {
-	ID               string           `json:"id,omitempty"`
-	Name             string           `json:"name,omitempty"`
-	Description      string           `json:"description,omitempty"`
-	URL              string           `json:"url,omitempty"`
-	SSHURL           string           `json:"ssh_url,omitempty"`
-	Owner            Owner            `json:"owner,omitempty"`
-	IsPrivate        bool             `json:"is_private,omitempty"`
-	CreatedAt        time.Time        `json:"created_at,omitempty"`
-	UpdatedAt        time.Time        `json:"updated_at,omitempty"`
-	PushedAt         time.Time        `json:"pushed_at,omitempty"`
-	RepositoryTopics RepositoryTopics `graphql:"repositoryTopics(first: 25)" json:"repository_topics,omitempty"`
-	Collaborators    Collaborators    `graphql:"collaborators(first: 15, affiliation: DIRECT)" json:"collaborators,omitempty"`
-	Languages        Languages        `graphql:"languages(first: 10, orderBy: {field: SIZE, direction: DESC})" json:"languages,omitempty"`
+	ID               string               `json:"id,omitempty"`
+	Name             string               `json:"name,omitempty"`
+	Description      string               `json:"description,omitempty"`
+	URL              string               `json:"url,omitempty"`
+	SSHURL           string               `json:"ssh_url,omitempty"`
+	Owner            Owner                `json:"owner,omitempty"`
+	IsPrivate        bool                 `json:"is_private,omitempty"`
+	CreatedAt        time.Time            `json:"created_at,omitempty"`
+	UpdatedAt        time.Time            `json:"updated_at,omitempty"`
+	PushedAt         time.Time            `json:"pushed_at,omitempty"`
+	RepositoryTopics RepositoryTopics     `graphql:"repositoryTopics(first: 25)" json:"repository_topics,omitempty"`
+	Collaborators    Collaborators        `graphql:"collaborators(first: 15, affiliation: DIRECT)" json:"collaborators,omitempty"`
+	Languages        Languages            `graphql:"languages(first: 10, orderBy: {field: SIZE, direction: DESC})" json:"languages,omitempty"`
+	ForkCount        int                  `json:"fork_count,omitempty"`
+	Stargazers       StargazersConnection `graphql:"stargazers(first: 0)" json:"stargazers,omitempty"`
+	Watchers         UserConnection       `graphql:"watchers(first: 0)" json:"watchers,omitempty"`
 }
 
 type Languages struct {
@@ -74,6 +77,14 @@ type Collaborator struct {
 	Name      string `json:"name,omitempty"`
 	Login     string `json:"login,omitempty"`
 	AvatarURL string `json:"avatar_url,omitempty"`
+}
+
+type StargazersConnection struct {
+	TotalCount int `json:"total_count,omitempty"`
+}
+
+type UserConnection struct {
+	TotalCount int `json:"total_count,omitempty"`
 }
 
 type Organization struct {
