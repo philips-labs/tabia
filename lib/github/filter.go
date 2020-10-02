@@ -13,6 +13,16 @@ type RepositoryFilterEnv struct {
 	Repositories []Repository
 }
 
+// MemberFilterEnv filter environment for members
+type MemberFilterEnv struct {
+	Members []Member
+}
+
+// Contains reports wether substring is in s.
+func (MemberFilterEnv) Contains(s, substring string) bool {
+	return strings.Contains(s, substring)
+}
+
 // Contains reports wether substring is in s.
 func (RepositoryFilterEnv) Contains(s, substring string) bool {
 	return strings.Contains(s, substring)
@@ -82,8 +92,8 @@ func equalOrAfter(a time.Time, date string) bool {
 	return a.Equal(since) || a.After(since)
 }
 
-// Reduce filters the repositories based on the given filter
-func Reduce(repositories []Repository, filter string) ([]Repository, error) {
+// ReduceRepositories filters the repositories based on the given filter
+func ReduceRepositories(repositories []Repository, filter string) ([]Repository, error) {
 	if strings.TrimSpace(filter) == "" {
 		return repositories, nil
 	}
@@ -102,4 +112,26 @@ func Reduce(repositories []Repository, filter string) ([]Repository, error) {
 		repos = append(repos, repo.(Repository))
 	}
 	return repos, nil
+}
+
+// ReduceMembers filters the members based on the given filter
+func ReduceMembers(members []Member, filter string) ([]Member, error) {
+	if strings.TrimSpace(filter) == "" {
+		return members, nil
+	}
+
+	program, err := expr.Compile(fmt.Sprintf("filter(Members, %s)", filter))
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := expr.Run(program, MemberFilterEnv{members})
+	if err != nil {
+		return nil, err
+	}
+	var filtered []Member
+	for _, m := range result.([]interface{}) {
+		filtered = append(filtered, m.(Member))
+	}
+	return filtered, nil
 }

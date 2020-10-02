@@ -112,6 +112,8 @@ bin/tabia -O philips-labs -F templated -T markdown.tmpl > repositories.md
 
 #### Filter
 
+##### Repositories
+
 The following repository fields can be filtered on.
 
 * ID
@@ -153,6 +155,21 @@ $ bin/tabia github repositories -O philips-labs -f '{ !.IsPrivate() && !.IsInter
 ...........
 ........
 ```
+
+##### Members
+
+The following member fields can be filtered on.
+
+* ID
+* Login
+* Name
+* Organization
+* SamlIdentity
+  * ID
+
+The following functions are available.
+
+* `func (MemberFilterEnv) Contains(s, substr string) bool`
 
 #### Download contents
 

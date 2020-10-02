@@ -94,6 +94,11 @@ func createGithub() *cli.Command {
 						Usage:     "Formats output using the given `TEMPLATE`",
 						TakesFile: true,
 					},
+					&cli.StringFlag{
+						Name:    "filter",
+						Aliases: []string{"f"},
+						Usage:   "filters members based on the given `EXPRESSION`",
+					},
 				},
 			},
 			{
@@ -153,7 +158,11 @@ func githubMembers(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		ghMembers = append(ghMembers, members...)
+		filtered, err := github.ReduceMembers(members, filter)
+		if err != nil {
+			return err
+		}
+		ghMembers = append(ghMembers, filtered...)
 	}
 
 	switch format {
@@ -200,7 +209,7 @@ func githubRepositories(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		filtered, err := github.Reduce(repos, filter)
+		filtered, err := github.ReduceRepositories(repos, filter)
 		if err != nil {
 			return err
 		}
