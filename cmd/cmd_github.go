@@ -72,6 +72,36 @@ func createGithub() *cli.Command {
 				},
 			},
 			{
+				Name:   "members",
+				Usage:  "display insights on members",
+				Action: githubMembers,
+				Flags: []cli.Flag{
+					&cli.StringSliceFlag{
+						Name:    "organization",
+						Aliases: []string{"O"},
+						Usage:   "fetches members for given organization",
+					},
+					&cli.StringFlag{
+						Name:        "format",
+						Aliases:     []string{"F"},
+						Usage:       "Formats output in the given `FORMAT`",
+						EnvVars:     []string{"TABIA_OUTPUT_FORMAT"},
+						DefaultText: "",
+					},
+					&cli.PathFlag{
+						Name:      "template",
+						Aliases:   []string{"T"},
+						Usage:     "Formats output using the given `TEMPLATE`",
+						TakesFile: true,
+					},
+					&cli.StringFlag{
+						Name:    "filter",
+						Aliases: []string{"f"},
+						Usage:   "filters members based on the given `EXPRESSION`",
+					},
+				},
+			},
+			{
 				Name:      "contents",
 				Usage:     "Gets contents from a repository",
 				Action:    githubContents,
@@ -113,6 +143,57 @@ func newGithubClient(c *cli.Context) *github.Client {
 	return github.NewClientWithTokenAuth(token, ghWriter)
 }
 
+func githubMembers(c *cli.Context) error {
+	owners := c.StringSlice("organization")
+	format := c.String("format")
+	filter := c.String("filter")
+
+	client := newGithubClient(c)
+	ctx, cancel := context.WithCancel(c.Context)
+	defer cancel()
+
+	var ghMembers []github.Member
+	for _, owner := range owners {
+		members, err := client.FetchOrganziationMembers(ctx, "royal-philips", owner)
+		if err != nil {
+			return err
+		}
+		filtered, err := github.ReduceMembers(members, filter)
+		if err != nil {
+			return err
+		}
+		ghMembers = append(ghMembers, filtered...)
+	}
+
+	switch format {
+	case "json":
+		output.PrintJSON(c.App.Writer, ghMembers)
+	case "templated":
+		if !c.IsSet("template") {
+			return fmt.Errorf("you must specify the path to the template")
+		}
+
+		templateFile := c.Path("template")
+		tmplContent, err := ioutil.ReadFile(templateFile)
+		if err != nil {
+			return err
+		}
+		err = output.PrintUsingTemplate(c.App.Writer, tmplContent, ghMembers)
+		if err != nil {
+			return err
+		}
+	default:
+		w := tabwriter.NewWriter(c.App.Writer, 3, 0, 2, ' ', tabwriter.TabIndent)
+		fmt.Fprintln(w, " \tLogin\tSAML Identity\tOrganization\tName")
+		for i, m := range ghMembers {
+			fmt.Fprintf(w, "%04d\t%s\t%s\t%s\t%s\n", i+1, m.Login, m.SamlIdentity.ID, m.Organization, m.Name)
+		}
+		w.Flush()
+	}
+
+	return nil
+}
+
 func githubRepositories(c *cli.Context) error {
 	owners := c.StringSlice("owner")
 	format := c.String("format")
@@ -128,7 +209,7 @@ func githubRepositories(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		filtered, err := github.Reduce(repos, filter)
+		filtered, err := github.ReduceRepositories(repos, filter)
 		if err != nil {
 			return err
 		}
