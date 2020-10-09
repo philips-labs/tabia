@@ -52,7 +52,11 @@ func (c *Client) FetchOrganziationMembers(ctx context.Context, enterprise, organ
 func identityEdges(edges []graphql.ExternalIdentityEdge) []graphql.ExternalIdentityNode {
 	var identities []graphql.ExternalIdentityNode
 	for _, edge := range edges {
-		identities = append(identities, edge.Node)
+		// seems users without the organization field populated are
+		// still returned by the api despite the filter on this field
+		if edge.Node.User.Organization.Name != "" {
+			identities = append(identities, edge.Node)
+		}
 	}
 	return identities
 }
