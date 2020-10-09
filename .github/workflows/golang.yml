@@ -26,13 +26,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Lint
-        run: |
-          go install golang.org/x/tools/cmd/goimports
-          result=$($(go env GOPATH)/bin/goimports -d -e -local github.com/philips-labs/tabia $(go list -f {{.Dir}} ./...))
-          echo $result
-          [ -n "$result" ] && exit 1 || exit 0
-
       - name: Cache Go modules
         uses: actions/cache@v2
         id: go-mod-cache
@@ -41,6 +34,13 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
+
+      - name: Lint
+        run: |
+          go install golang.org/x/tools/cmd/goimports
+          result=$($(go env GOPATH)/bin/goimports -d -e -local github.com/philips-labs/tabia $(go list -f {{.Dir}} ./...))
+          echo $result
+          [ -n "$result" ] && exit 1 || exit 0
 
       - name: Get dependencies
         run: go mod download
