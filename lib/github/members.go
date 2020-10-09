@@ -9,15 +9,15 @@ import (
 )
 
 type Member struct {
-	ID           string
-	Login        string
-	Name         string
-	Organization string
-	SamlIdentity *SamlIdentity
+	ID           string        `json:"id,omitempty"`
+	Login        string        `json:"login,omitempty"`
+	Name         string        `json:"name,omitempty"`
+	Organization string        `json:"organization,omitempty"`
+	SamlIdentity *SamlIdentity `json:"saml_identity,omitempty"`
 }
 
 type SamlIdentity struct {
-	ID string
+	ID string `json:"id,omitempty"`
 }
 
 func (c *Client) FetchOrganziationMembers(ctx context.Context, enterprise, organization string) ([]Member, error) {
