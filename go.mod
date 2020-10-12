@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/antonmedv/expr v1.8.9
 	github.com/google/go-github/v32 v32.1.0
-	github.com/goreleaser/goreleaser v0.143.0
+	github.com/goreleaser/goreleaser v0.144.1
 	github.com/shurcooL/githubv4 v0.0.0-20200928013246-d292edc3691b
 	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
 	github.com/stretchr/testify v1.6.1
