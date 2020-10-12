@@ -36,6 +36,7 @@ type Member struct {
 	ID           string           `json:"id,omitempty"`
 	Login        string           `json:"login,omitempty"`
 	Name         string           `json:"name,omitempty"`
+	Email        string           `json:"email,omitempty"`
 	Organization OrganizationName `graphql:"organization(login: $organization)" json:"organization,omitempty"`
 }
 

@@ -12,6 +12,7 @@ type Member struct {
 	ID           string        `json:"id,omitempty"`
 	Login        string        `json:"login,omitempty"`
 	Name         string        `json:"name,omitempty"`
+	Email        string        `json:"email,omitempty"`
 	Organization string        `json:"organization,omitempty"`
 	SamlIdentity *SamlIdentity `json:"saml_identity,omitempty"`
 }
@@ -68,6 +69,7 @@ func MapIdentitiesToMembers(identities []graphql.ExternalIdentityNode) []Member 
 			ID:           identity.User.ID,
 			Login:        identity.User.Login,
 			Name:         identity.User.Name,
+			Email:        identity.User.Email,
 			Organization: identity.User.Organization.Name,
 			SamlIdentity: &SamlIdentity{ID: identity.SamlIdentity.NameId},
 		}
