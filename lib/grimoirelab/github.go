@@ -9,6 +9,7 @@ import (
 	"regexp"
 
 	"github.com/philips-labs/tabia/lib/github"
+	"github.com/philips-labs/tabia/lib/shared"
 )
 
 // GithubMetadataFactory allows to provide a custom generated metadata
@@ -115,7 +116,7 @@ func updateFromGithubProject(project *Project, repo github.Repository, basicAuth
 	project.Metadata = metadataFactory(repo)
 	link := repo.URL
 	if link != "" {
-		if repo.Visibility != github.Public {
+		if repo.Visibility != shared.Public {
 			u, _ := url.Parse(link)
 			link = fmt.Sprintf("%s://%s@%s%s", u.Scheme, basicAuth, u.Hostname(), u.EscapedPath())
 		}

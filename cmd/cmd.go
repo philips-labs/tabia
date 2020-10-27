@@ -7,5 +7,6 @@ func CreateCommands() []*cli.Command {
 	return []*cli.Command{
 		createBitbucket(),
 		createGithub(),
+		createGitlab(),
 	}
 }

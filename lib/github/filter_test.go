@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/philips-labs/tabia/lib/github"
+	"github.com/philips-labs/tabia/lib/shared"
 )
 
 func TestReduceRepositories(t *testing.T) {
@@ -15,32 +16,32 @@ func TestReduceRepositories(t *testing.T) {
 
 	repos := []github.Repository{
 		github.Repository{
-			Name: "tabia", Visibility: github.Public, Owner: "philips-labs",
+			Name: "tabia", Visibility: shared.Public, Owner: "philips-labs",
 			Languages: []github.Language{github.Language{Name: "Go"}},
 			CreatedAt: time.Now().Add(-24 * time.Hour),
 			PushedAt:  time.Now().Add(-24 * time.Hour),
 			UpdatedAt: time.Now().Add(-24 * time.Hour),
 		},
 		github.Repository{
-			Name: "garo", Visibility: github.Public, Owner: "philips-labs",
+			Name: "garo", Visibility: shared.Public, Owner: "philips-labs",
 			CreatedAt: time.Now().Add(-96 * time.Hour),
 			PushedAt:  time.Now().Add(-96 * time.Hour),
 			UpdatedAt: time.Now().Add(-96 * time.Hour),
 		},
 		github.Repository{
-			Name: "dct-notary-admin", Visibility: github.Public, Owner: "philips-labs",
+			Name: "dct-notary-admin", Visibility: shared.Public, Owner: "philips-labs",
 			CreatedAt: time.Now().Add(-24 * time.Hour),
 			PushedAt:  time.Now().Add(-24 * time.Hour),
 			UpdatedAt: time.Now().Add(-24 * time.Hour),
 		},
 		github.Repository{
-			Name: "company-draft", Visibility: github.Internal, Owner: "philips-labs",
+			Name: "company-draft", Visibility: shared.Internal, Owner: "philips-labs",
 			CreatedAt: time.Now().Add(-48 * time.Hour),
 			PushedAt:  time.Now().Add(-48 * time.Hour),
 			UpdatedAt: time.Now().Add(-48 * time.Hour),
 		},
 		github.Repository{
-			Name: "top-secret", Visibility: github.Private, Owner: "philips-labs",
+			Name: "top-secret", Visibility: shared.Private, Owner: "philips-labs",
 			CreatedAt: time.Now().Add(-24 * time.Hour),
 			PushedAt:  time.Now().Add(-24 * time.Hour),
 			UpdatedAt: time.Now().Add(-24 * time.Hour),
@@ -157,7 +158,7 @@ func TestReduceWrongExpression(t *testing.T) {
 	assert := assert.New(t)
 
 	repos := []github.Repository{
-		github.Repository{Name: "tabia", Visibility: github.Public},
+		github.Repository{Name: "tabia", Visibility: shared.Public},
 	}
 
 	reduced, err := github.ReduceRepositories(repos, `.Name == "tabia"`)

@@ -10,60 +10,30 @@ import (
 	"github.com/shurcooL/githubv4"
 
 	"github.com/philips-labs/tabia/lib/github/graphql"
+	"github.com/philips-labs/tabia/lib/shared"
 )
-
-//go:generate stringer -type=Visibility
-
-// Visibility indicates repository visibility
-type Visibility int
-
-const (
-	// Public repositories are publicly visible
-	Public Visibility = iota
-	// Internal repositories are only visible to organization members
-	Internal
-	// Private repositories are only visible to authorized users
-	Private
-)
-
-func (v *Visibility) UnmarshalText(text []byte) error {
-	switch strings.ToLower(string(text)) {
-	default:
-	case "public":
-		*v = Public
-	case "internal":
-		*v = Internal
-	case "private":
-		*v = Private
-	}
-	return nil
-}
-
-func (v Visibility) MarshalText() ([]byte, error) {
-	return []byte(v.String()), nil
-}
 
 type RestRepo struct {
 	Name string
 }
 
 type Repository struct {
-	ID             string         `json:"id,omitempty"`
-	Name           string         `json:"name,omitempty"`
-	Description    string         `json:"description,omitempty"`
-	URL            string         `json:"url,omitempty"`
-	SSHURL         string         `json:"ssh_url,omitempty"`
-	Owner          string         `json:"owner,omitempty"`
-	Visibility     Visibility     `json:"visibility"`
-	CreatedAt      time.Time      `json:"created_at,omitempty"`
-	UpdatedAt      time.Time      `json:"updated_at,omitempty"`
-	PushedAt       time.Time      `json:"pushed_at,omitempty"`
-	ForkCount      int            `json:"fork_count,omitempty"`
-	StargazerCount int            `json:"stargazer_count,omitempty"`
-	WatcherCount   int            `json:"watcher_count,omitempty"`
-	Topics         []Topic        `json:"topics,omitempty"`
-	Languages      []Language     `json:"languages,omitempty"`
-	Collaborators  []Collaborator `json:"collaborators,omitempty"`
+	ID             string            `json:"id,omitempty"`
+	Name           string            `json:"name,omitempty"`
+	Description    string            `json:"description,omitempty"`
+	URL            string            `json:"url,omitempty"`
+	SSHURL         string            `json:"ssh_url,omitempty"`
+	Owner          string            `json:"owner,omitempty"`
+	Visibility     shared.Visibility `json:"visibility"`
+	CreatedAt      time.Time         `json:"created_at,omitempty"`
+	UpdatedAt      time.Time         `json:"updated_at,omitempty"`
+	PushedAt       time.Time         `json:"pushed_at,omitempty"`
+	ForkCount      int               `json:"fork_count,omitempty"`
+	StargazerCount int               `json:"stargazer_count,omitempty"`
+	WatcherCount   int               `json:"watcher_count,omitempty"`
+	Topics         []Topic           `json:"topics,omitempty"`
+	Languages      []Language        `json:"languages,omitempty"`
+	Collaborators  []Collaborator    `json:"collaborators,omitempty"`
 }
 
 type Collaborator struct {
@@ -170,12 +140,12 @@ func Map(repositories []graphql.Repository, privateRepositories []*github.Reposi
 			}
 
 			if isPrivate {
-				repos[i].Visibility = Private
+				repos[i].Visibility = shared.Private
 			} else {
-				repos[i].Visibility = Internal
+				repos[i].Visibility = shared.Internal
 			}
 		} else {
-			repos[i].Visibility = Public
+			repos[i].Visibility = shared.Public
 		}
 	}
 
