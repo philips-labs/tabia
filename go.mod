@@ -7,7 +7,7 @@ require (
 	github.com/google/go-github/v33 v33.0.0
 	github.com/goreleaser/goreleaser v0.155.0
 	github.com/hashicorp/go-cleanhttp v0.5.1
-	github.com/shurcooL/githubv4 v0.0.0-20200928013246-d292edc3691b
+	github.com/shurcooL/githubv4 v0.0.0-20201206200315-234843c633fa
 	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/urfave/cli/v2 v2.3.0
