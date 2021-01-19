@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	gh "github.com/google/go-github/v32/github"
+	gh "github.com/google/go-github/v33/github"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/philips-labs/tabia/lib/github"
