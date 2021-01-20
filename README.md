@@ -7,7 +7,7 @@ Tabia means characteristic in Swahili. Tabia is giving us insights on the charac
 
 ## Setup
 
-Copy `.env.example` to `.env` and fill out the bitbucket token. This environment variable is read by the CLI and tests. Also vscode will read the variable when running tests or starting debugger.
+Copy `.env.example` to `.env` and fill out the credentials. This environment variable is read by the CLI and tests. Also vscode will read the variable when running tests or starting debugger.
 
 ```bash
 cp .env.example .env
