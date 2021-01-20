@@ -6,7 +6,9 @@ require (
 	github.com/antonmedv/expr v1.8.9
 	github.com/google/go-github/v33 v33.0.0
 	github.com/goreleaser/goreleaser v0.157.0
+	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/hashicorp/go-cleanhttp v0.5.2
+	github.com/palantir/go-githubapp v0.6.0
 	github.com/shurcooL/githubv4 v0.0.0-20201206200315-234843c633fa
 	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
 	github.com/stretchr/testify v1.7.0
