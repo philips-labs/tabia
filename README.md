@@ -65,6 +65,18 @@ bin/tabia github --help
 bin/tabia github repositories --help
 ```
 
+#### Authentication
+
+Please note when using Github Authentication there are 2 options to authenticate.
+
+1. Authenticate as a Github App (your app will have to be installed in the organization)
+   - integration-id
+   - private-key
+2. Authenticate using a Personal Access Token
+   - token
+
+> :warning: When authenticating as a *GitHub App* please be informed you can only fetch information from **one** organization at a time as the client will be bound to that organizations App installation. To support multiple organizations we require a refactor using a Github client per organization.
+
 ### Output - Grimoirelab
 
 To expose the repositories in [Grimoirelab projects.json](https://github.com/chaoss/grimoirelab-sirmordred#projectsjson-) format, you can optionally provide a json file to map repositories to projects. By default the project will be mapped to the owner of the repository. Anything not matching the rules will fall back to this default.

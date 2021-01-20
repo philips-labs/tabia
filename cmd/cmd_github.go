@@ -160,7 +160,9 @@ func newGithubClient(c *cli.Context) (*github.Client, error) {
 		if err != nil {
 			return nil, err
 		}
-		client, err := github.NewClientWithAppAuth(integrationID, string(privateKeyBytes), ghWriter)
+		org := append(c.StringSlice("owner"), c.StringSlice("organization")...)
+
+		client, err := github.NewClientWithAppAuth(integrationID, string(privateKeyBytes), org[0], ghWriter)
 		return client, nil
 	}
 

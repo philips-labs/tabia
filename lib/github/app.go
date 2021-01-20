@@ -1,6 +1,8 @@
 package github
 
 import (
+	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -13,7 +15,7 @@ import (
 
 // NewClientWithAppAuth creates a new client that authenticates using an app integration ID
 // and a app private key
-func NewClientWithAppAuth(integrationID int64, privateKey string, writer io.Writer) (*Client, error) {
+func NewClientWithAppAuth(integrationID int64, privateKey, organization string, writer io.Writer) (*Client, error) {
 	config := new(githubapp.Config)
 	config.App.IntegrationID = integrationID
 	config.App.PrivateKey = privateKey
@@ -23,20 +25,29 @@ func NewClientWithAppAuth(integrationID int64, privateKey string, writer io.Writ
 	cc, err := githubapp.NewDefaultCachingClientCreator(
 		*config,
 		githubapp.WithClientUserAgent("tabia"),
-		githubapp.WithClientTimeout(3*time.Second),
+		githubapp.WithClientTimeout(10*time.Second),
 		githubapp.WithClientCaching(false, func() httpcache.Cache { return httpcache.NewMemoryCache() }),
 		githubapp.WithClientMiddleware(ClientLogging(writer)),
 	)
 
-	client, err := cc.NewAppV4Client()
+	appClient, err := cc.NewAppClient()
 	if err != nil {
 		return nil, err
 	}
-	restClient, err := cc.NewAppClient()
+	installation, _, err := appClient.Apps.FindOrganizationInstallation(context.Background(), organization)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(installation)
 
+	client, err := cc.NewInstallationV4Client(*installation.ID)
+	if err != nil {
+		return nil, err
+	}
+	restClient, err := cc.NewInstallationClient(*installation.ID)
+	if err != nil {
+		return nil, err
+	}
 	return &Client{nil, restClient, client}, nil
 }
 
