@@ -166,7 +166,10 @@ func githubMembers(c *cli.Context) error {
 
 	switch format {
 	case "json":
-		output.PrintJSON(c.App.Writer, ghMembers)
+		err := output.PrintJSON(c.App.Writer, ghMembers)
+		if err != nil {
+			return err
+		}
 	case "templated":
 		if !c.IsSet("template") {
 			return fmt.Errorf("you must specify the path to the template")
@@ -204,7 +207,7 @@ func githubRepositories(c *cli.Context) error {
 
 	var repositories []github.Repository
 	for _, owner := range owners {
-		repos, err := client.FetchOrganziationRepositories(ctx, owner)
+		repos, err := client.FetchOrganizationRepositories(ctx, owner)
 		if err != nil {
 			return err
 		}
@@ -217,7 +220,10 @@ func githubRepositories(c *cli.Context) error {
 
 	switch format {
 	case "json":
-		output.PrintJSON(c.App.Writer, repositories)
+		err := output.PrintJSON(c.App.Writer, repositories)
+		if err != nil {
+			return err
+		}
 	case "grimoirelab":
 		projectMatchingConfig := c.Path("matching")
 		json, err := os.Open(projectMatchingConfig)

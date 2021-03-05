@@ -24,4 +24,5 @@ func TestDownloadContents(t *testing.T) {
 	if assert.Error(err) {
 		assert.EqualError(err, "No file named IamNotThere.txt found in .")
 	}
+	assert.Empty(contents)
 }

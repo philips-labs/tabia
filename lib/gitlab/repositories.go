@@ -103,7 +103,3 @@ func mapOwner(owner *gitlab.User) string {
 	}
 	return ""
 }
-
-func boolPointer(b bool) *bool {
-	return &b
-}

@@ -45,21 +45,19 @@ func TestNewGithubProjectMatcherFromJSON(t *testing.T) {
 }
 
 func TestConvertGithubProjectsJSON(t *testing.T) {
-	type MyString string
-
 	assert := assert.New(t)
 
 	ghUser := os.Getenv("TABIA_GITHUB_USER")
 	ghToken := os.Getenv("TABIA_GITHUB_TOKEN")
 
 	repos := []github.Repository{
-		github.Repository{
+		{
 			Name:       "R1",
 			Visibility: shared.Public,
 			URL:        "https://github.com/philips-software/logproxy",
 			Owner:      "philips-software",
 		},
-		github.Repository{
+		{
 			Name:       "R1",
 			Visibility: shared.Private,
 			URL:        "https://github.com/philips-labs/tabia",

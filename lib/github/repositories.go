@@ -51,9 +51,9 @@ type Language struct {
 	Size  int    `json:"size,omitempty"`
 }
 
-func (c *Client) FetchOrganziationRepositories(ctx context.Context, owner string) ([]Repository, error) {
+func (c *Client) FetchOrganizationRepositories(ctx context.Context, owner string) ([]Repository, error) {
 	var q struct {
-		Repositories graphql.RepositorySearch `graphql:"search(query: $query, type: REPOSITORY, first:100, after: $repoCursor)""`
+		Repositories graphql.RepositorySearch `graphql:"search(query: $query, type: REPOSITORY, first: 100, after: $repoCursor)"`
 	}
 
 	// archived repositories are filtered as they give error when fetching collaborators

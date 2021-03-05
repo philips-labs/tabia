@@ -2,6 +2,7 @@ package github_test
 
 import (
 	"context"
+	"os"
 	"strings"
 	"testing"
 
@@ -15,10 +16,11 @@ func TestClient(t *testing.T) {
 
 	var buf strings.Builder
 
-	client := github.NewClientWithTokenAuth("token", &buf)
+	client := github.NewClientWithTokenAuth(os.Getenv("TABIA_GITHUB_TOKEN"), &buf)
 	var q struct{}
-	client.Client.Query(context.Background(), q, nil)
+	err := client.Client.Query(context.Background(), q, nil)
 
+	assert.EqualError(err, "Field must have selections (anonymous query returns Query but has no selections. Did you mean ' { ... }'?)")
 	assert.NotEmpty(buf)
 	assert.Equal("POST: https://api.github.com/graphql {\"query\":\"{}\"}\n", buf.String())
 }

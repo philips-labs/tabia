@@ -16,7 +16,7 @@ var stubRepositoriesResponse = http.HandlerFunc(func(w http.ResponseWriter, r *h
 		Values: make([]bitbucket.Repository, 12),
 	}
 	resp, _ := json.Marshal(projectsResponse)
-	w.Write(resp)
+	_, _ = w.Write(resp)
 })
 
 func TestListRepositoriesRaw(t *testing.T) {
@@ -32,7 +32,7 @@ func TestListRepositoriesRaw(t *testing.T) {
 
 	assert.NotNil(resp)
 	bytes, err := io.ReadAll(resp)
-
+	assert.NoError(err)
 	assert.NotEmpty(bytes)
 }
 

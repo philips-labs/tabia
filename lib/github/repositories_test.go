@@ -27,11 +27,12 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 		Name:       "private-repo",
 		Visibility: shared.Private,
 	}
-	jsonEnc.Encode(privRepo)
+	err := jsonEnc.Encode(privRepo)
+	assert.NoError(err)
 	assert.Equal(fmt.Sprintf(expectedTemplate, "private-repo", "Private"), result.String())
 
 	var unmarshalledRepo github.Repository
-	err := json.Unmarshal([]byte(result.String()), &unmarshalledRepo)
+	err = json.Unmarshal([]byte(result.String()), &unmarshalledRepo)
 	if assert.NoError(err) {
 		assert.Equal(shared.Private, unmarshalledRepo.Visibility)
 	}
@@ -41,7 +42,8 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 		Visibility: shared.Internal,
 	}
 	result.Reset()
-	jsonEnc.Encode(internalRepo)
+	err = jsonEnc.Encode(internalRepo)
+	assert.NoError(err)
 	assert.Equal(fmt.Sprintf(expectedTemplate, "internal-repo", "Internal"), result.String())
 
 	err = json.Unmarshal([]byte(result.String()), &unmarshalledRepo)
@@ -54,7 +56,9 @@ func TestRepositoryVisibilityToJSON(t *testing.T) {
 		Visibility: shared.Public,
 	}
 	result.Reset()
-	jsonEnc.Encode(publicRepo)
+
+	err = jsonEnc.Encode(publicRepo)
+	assert.NoError(err)
 	assert.Equal(fmt.Sprintf(expectedTemplate, "public-repo", "Public"), result.String())
 
 	err = json.Unmarshal([]byte(result.String()), &unmarshalledRepo)

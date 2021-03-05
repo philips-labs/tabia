@@ -104,7 +104,10 @@ func gitlabRepositories(c *cli.Context) error {
 
 	switch format {
 	case "json":
-		output.PrintJSON(c.App.Writer, filtered)
+		err := output.PrintJSON(c.App.Writer, filtered)
+		if err != nil {
+			return err
+		}
 	case "templated":
 		if !c.IsSet("template") {
 			return fmt.Errorf("you must specify the path to the template")
