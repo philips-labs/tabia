@@ -156,7 +156,7 @@ func newGithubClient(c *cli.Context) (*github.Client, error) {
 		integrationID := c.Int64("integration-id")
 		privateKey := c.Path("private-key")
 
-		privateKeyBytes, err := ioutil.ReadFile(privateKey)
+		privateKeyBytes, err := os.ReadFile(privateKey)
 		if err != nil {
 			return nil, err
 		}

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
 	"text/tabwriter"
 
 	"github.com/urfave/cli/v2"
@@ -111,7 +111,7 @@ func gitlabRepositories(c *cli.Context) error {
 		}
 
 		templateFile := c.Path("template")
-		tmplContent, err := ioutil.ReadFile(templateFile)
+		tmplContent, err := os.ReadFile(templateFile)
 		if err != nil {
 			return err
 		}
