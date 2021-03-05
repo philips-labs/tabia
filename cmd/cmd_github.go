@@ -26,7 +26,21 @@ func createGithub() *cli.Command {
 				Aliases:  []string{"t"},
 				Usage:    "Calls the api using the given `TOKEN`",
 				EnvVars:  []string{"TABIA_GITHUB_TOKEN"},
-				Required: true,
+				Required: false,
+			},
+			&cli.StringFlag{
+				Name:     "integration-id",
+				Aliases:  []string{"app-id"},
+				Usage:    "Authenticates to Github using the given `APP_INTEGRATION_ID`",
+				EnvVars:  []string{"TABIA_GITHUB_APP_INTEGRATION_ID"},
+				Required: false,
+			},
+			&cli.PathFlag{
+				Name:      "private-key",
+				Usage:     "Authenticates to Github using the given `APP_PRIVATE_KEY`",
+				EnvVars:   []string{"TABIA_GITHUB_APP_PRIVATE_KEY"},
+				Required:  false,
+				TakesFile: true,
 			},
 			&cli.BoolFlag{
 				Name:  "verbose",
@@ -130,16 +144,34 @@ func createGithub() *cli.Command {
 	}
 }
 
-func newGithubClient(c *cli.Context) *github.Client {
+func newGithubClient(c *cli.Context) (*github.Client, error) {
 	verbose := c.Bool("verbose")
-	token := c.String("token")
 
 	var ghWriter io.Writer
 	if verbose {
 		ghWriter = c.App.Writer
 	}
 
-	return github.NewClientWithTokenAuth(token, ghWriter)
+	if c.IsSet("integration-id") && c.IsSet("private-key") {
+		integrationID := c.Int64("integration-id")
+		privateKey := c.Path("private-key")
+
+		privateKeyBytes, err := os.ReadFile(privateKey)
+		if err != nil {
+			return nil, err
+		}
+		org := append(c.StringSlice("owner"), c.StringSlice("organization")...)
+
+		client, err := github.NewClientWithAppAuth(integrationID, string(privateKeyBytes), org[0], ghWriter)
+		return client, nil
+	}
+
+	if !c.IsSet("token") {
+		return nil, fmt.Errorf("no `integration-id` and `private-key` or `token` provided")
+	}
+
+	token := c.String("token")
+	return github.NewClientWithTokenAuth(token, ghWriter), nil
 }
 
 func githubMembers(c *cli.Context) error {
@@ -147,7 +179,11 @@ func githubMembers(c *cli.Context) error {
 	format := c.String("format")
 	filter := c.String("filter")
 
-	client := newGithubClient(c)
+	client, err := newGithubClient(c)
+	if err != nil {
+		return err
+	}
+
 	ctx, cancel := context.WithCancel(c.Context)
 	defer cancel()
 
@@ -198,7 +234,10 @@ func githubRepositories(c *cli.Context) error {
 	format := c.String("format")
 	filter := c.String("filter")
 
-	client := newGithubClient(c)
+	client, err := newGithubClient(c)
+	if err != nil {
+		return err
+	}
 	ctx, cancel := context.WithCancel(c.Context)
 	defer cancel()
 
@@ -274,7 +313,10 @@ func githubContents(c *cli.Context) error {
 	filePath := c.String("file")
 	output := c.Path("output")
 
-	client := newGithubClient(c)
+	client, err := newGithubClient(c)
+	if err != nil {
+		return err
+	}
 	ctx, cancel := context.WithCancel(c.Context)
 	defer cancel()
 

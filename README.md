@@ -7,7 +7,7 @@ Tabia means characteristic in Swahili. Tabia is giving us insights on the charac
 
 ## Setup
 
-Copy `.env.example` to `.env` and fill out the bitbucket token. This environment variable is read by the CLI and tests. Also vscode will read the variable when running tests or starting debugger.
+Copy `.env.example` to `.env` and fill out the credentials. This environment variable is read by the CLI and tests. Also vscode will read the variable when running tests or starting debugger.
 
 ```bash
 cp .env.example .env
@@ -64,6 +64,18 @@ To interact with Github `tabia` makes use of the [Github graphql API](https://ap
 bin/tabia github --help
 bin/tabia github repositories --help
 ```
+
+#### Authentication
+
+Please note when using Github Authentication there are 2 options to authenticate.
+
+1. Authenticate as a Github App (your app will have to be installed in the organization)
+   - integration-id
+   - private-key
+2. Authenticate using a Personal Access Token
+   - token
+
+> :warning: When authenticating as a *GitHub App* please be informed you can only fetch information from **one** organization at a time as the client will be bound to that organizations App installation. To support multiple organizations we require a refactor using a Github client per organization.
 
 ### Output - Grimoirelab
 
