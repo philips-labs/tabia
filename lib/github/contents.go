@@ -2,7 +2,7 @@ package github
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 )
 
 // DownloadContents downloads file contents from the given filepath
@@ -13,5 +13,5 @@ func (c *Client) DownloadContents(ctx context.Context, owner, repo, filepath str
 	}
 
 	defer contents.Close()
-	return ioutil.ReadAll(contents)
+	return io.ReadAll(contents)
 }

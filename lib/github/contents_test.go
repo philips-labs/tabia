@@ -2,7 +2,6 @@ package github_test
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -16,7 +15,7 @@ func TestDownloadContents(t *testing.T) {
 	gh := github.NewClientWithTokenAuth(os.Getenv("TABIA_GITHUB_TOKEN"), nil)
 	contents, err := gh.DownloadContents(context.Background(), "philips-labs", "tabia", "README.md")
 	if assert.NoError(err) {
-		readme, _ := ioutil.ReadFile("../../README.md")
+		readme, _ := os.ReadFile("../../README.md")
 		assert.NotEmpty(contents)
 		assert.Equal(string(readme[:100]), string(contents[:100]))
 	}

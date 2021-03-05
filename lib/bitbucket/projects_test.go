@@ -2,7 +2,7 @@ package bitbucket_test
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 
@@ -31,7 +31,7 @@ func TestListProjectsRaw(t *testing.T) {
 	defer resp.Close()
 
 	assert.NotNil(resp)
-	bytes, err := ioutil.ReadAll(resp)
+	bytes, err := io.ReadAll(resp)
 
 	assert.NotEmpty(bytes)
 }

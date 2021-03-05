@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -174,7 +173,7 @@ func githubMembers(c *cli.Context) error {
 		}
 
 		templateFile := c.Path("template")
-		tmplContent, err := ioutil.ReadFile(templateFile)
+		tmplContent, err := os.ReadFile(templateFile)
 		if err != nil {
 			return err
 		}
@@ -250,7 +249,7 @@ func githubRepositories(c *cli.Context) error {
 		}
 
 		templateFile := c.Path("template")
-		tmplContent, err := ioutil.ReadFile(templateFile)
+		tmplContent, err := os.ReadFile(templateFile)
 		if err != nil {
 			return err
 		}
@@ -296,7 +295,7 @@ func githubContents(c *cli.Context) error {
 				return err
 			}
 		}
-		err := ioutil.WriteFile(output, contents, 0644)
+		err := os.WriteFile(output, contents, 0644)
 		if err != nil {
 			return err
 		}
