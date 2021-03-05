@@ -97,4 +97,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Logout from DockerHub Registry
+        if: ${{ always() }}
         run: docker logout
