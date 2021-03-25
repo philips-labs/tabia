@@ -31,6 +31,9 @@ func bitbucketTestClient(handler http.Handler) (*bitbucket.Client, string, func(
 }
 
 func TestClientWithTokenAuth(t *testing.T) {
+	if len(os.Getenv("TABIA_BITBUCKET_TOKEN")) == 0 {
+		t.Skip("skipping integration test, depending on environment variable")
+	}
 	assert := assert.New(t)
 
 	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -53,6 +56,9 @@ func TestClientWithTokenAuth(t *testing.T) {
 }
 
 func TestClientWithBasicAuth(t *testing.T) {
+	if len(os.Getenv("TABIA_BITBUCKET_TOKEN")) == 0 {
+		t.Skip("skipping integration test, depending on environment variable")
+	}
 	assert := assert.New(t)
 
 	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

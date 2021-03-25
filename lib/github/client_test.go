@@ -12,6 +12,9 @@ import (
 )
 
 func TestClient(t *testing.T) {
+	if len(os.Getenv("TABIA_GITHUB_TOKEN")) == 0 {
+		t.Skip("skipping integration test, depending on environment variable")
+	}
 	assert := assert.New(t)
 
 	var buf strings.Builder

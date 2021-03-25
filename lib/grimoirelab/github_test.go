@@ -45,6 +45,9 @@ func TestNewGithubProjectMatcherFromJSON(t *testing.T) {
 }
 
 func TestConvertGithubProjectsJSON(t *testing.T) {
+	if len(os.Getenv("TABIA_GITHUB_USER")) == 0 || len(os.Getenv("TABIA_GITHUB_TOKEN")) == 0 {
+		t.Skip("skipping integration test, depending on environment variable")
+	}
 	assert := assert.New(t)
 
 	ghUser := os.Getenv("TABIA_GITHUB_USER")

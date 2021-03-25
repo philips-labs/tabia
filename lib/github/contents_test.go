@@ -11,6 +11,9 @@ import (
 )
 
 func TestDownloadContents(t *testing.T) {
+	if len(os.Getenv("TABIA_GITHUB_TOKEN")) == 0 {
+		t.Skip("skipping integration test, depending on environment variable")
+	}
 	assert := assert.New(t)
 	gh := github.NewClientWithTokenAuth(os.Getenv("TABIA_GITHUB_TOKEN"), nil)
 	contents, err := gh.DownloadContents(context.Background(), "philips-labs", "tabia", "README.md")
