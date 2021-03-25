@@ -13,12 +13,12 @@ func TestMapIdentitiesToMembers(t *testing.T) {
 	assert := assert.New(t)
 
 	graphqlIdentities := []graphql.ExternalIdentityNode{
-		graphql.ExternalIdentityNode{
+		{
 			SamlIdentity: graphql.SamlIdentity{NameId: "ldapID1234", Username: "ldapID1234"},
 			User: graphql.Member{ID: "githubID1234", Login: "marcofranssen", Name: "Marco Franssen", Organization: struct {
 				Name string `json:"name,omitempty"`
 			}{Name: "philips-labs"}}},
-		graphql.ExternalIdentityNode{
+		{
 			SamlIdentity: graphql.SamlIdentity{NameId: "ldapID5678", Username: "ldapID5678"},
 			User: graphql.Member{ID: "githubID5678", Login: "jdoe", Name: "John Doe", Organization: struct {
 				Name string `json:"name,omitempty"`

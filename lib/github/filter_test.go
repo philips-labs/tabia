@@ -15,37 +15,37 @@ func TestReduceRepositories(t *testing.T) {
 	assert := assert.New(t)
 
 	repos := []github.Repository{
-		github.Repository{
+		{
 			Name: "tabia", Visibility: shared.Public, Owner: "philips-labs",
-			Languages: []github.Language{github.Language{Name: "Go"}},
+			Languages: []github.Language{{Name: "Go"}},
 			CreatedAt: time.Now().Add(-24 * time.Hour),
 			PushedAt:  time.Now().Add(-24 * time.Hour),
 			UpdatedAt: time.Now().Add(-24 * time.Hour),
 		},
-		github.Repository{
+		{
 			Name: "garo", Visibility: shared.Public, Owner: "philips-labs",
 			CreatedAt: time.Now().Add(-96 * time.Hour),
 			PushedAt:  time.Now().Add(-96 * time.Hour),
 			UpdatedAt: time.Now().Add(-96 * time.Hour),
 		},
-		github.Repository{
+		{
 			Name: "dct-notary-admin", Visibility: shared.Public, Owner: "philips-labs",
 			CreatedAt: time.Now().Add(-24 * time.Hour),
 			PushedAt:  time.Now().Add(-24 * time.Hour),
 			UpdatedAt: time.Now().Add(-24 * time.Hour),
 		},
-		github.Repository{
+		{
 			Name: "company-draft", Visibility: shared.Internal, Owner: "philips-labs",
 			CreatedAt: time.Now().Add(-48 * time.Hour),
 			PushedAt:  time.Now().Add(-48 * time.Hour),
 			UpdatedAt: time.Now().Add(-48 * time.Hour),
 		},
-		github.Repository{
+		{
 			Name: "top-secret", Visibility: shared.Private, Owner: "philips-labs",
 			CreatedAt: time.Now().Add(-24 * time.Hour),
 			PushedAt:  time.Now().Add(-24 * time.Hour),
 			UpdatedAt: time.Now().Add(-24 * time.Hour),
-			Topics:    []github.Topic{github.Topic{Name: "ip"}},
+			Topics:    []github.Topic{{Name: "ip"}},
 		},
 	}
 
@@ -135,9 +135,9 @@ func TestReduceMembers(t *testing.T) {
 	assert := assert.New(t)
 
 	members := []github.Member{
-		github.Member{Name: "John Doe"},
-		github.Member{Name: "Marco Franssen"},
-		github.Member{Name: "Jane Doe"},
+		{Name: "John Doe"},
+		{Name: "Marco Franssen"},
+		{Name: "Jane Doe"},
 	}
 
 	reduced, err := github.ReduceMembers(members, `{ .Name == "Marco Franssen" }`)
@@ -158,7 +158,7 @@ func TestReduceWrongExpression(t *testing.T) {
 	assert := assert.New(t)
 
 	repos := []github.Repository{
-		github.Repository{Name: "tabia", Visibility: shared.Public},
+		{Name: "tabia", Visibility: shared.Public},
 	}
 
 	reduced, err := github.ReduceRepositories(repos, `.Name == "tabia"`)

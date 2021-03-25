@@ -73,33 +73,33 @@ func TestMap(t *testing.T) {
 	owner := graphql.Owner{Login: "philips-labs"}
 	topics := graphql.RepositoryTopics{
 		Nodes: []graphql.RepositoryTopic{
-			graphql.RepositoryTopic{Topic: graphql.Topic{Name: "opensource"}, ResourcePath: "/topics/opensource"},
-			graphql.RepositoryTopic{Topic: graphql.Topic{Name: "golang"}, ResourcePath: "/topics/golang"},
-			graphql.RepositoryTopic{Topic: graphql.Topic{Name: "graphql"}, ResourcePath: "/topics/graphql"},
+			{Topic: graphql.Topic{Name: "opensource"}, ResourcePath: "/topics/opensource"},
+			{Topic: graphql.Topic{Name: "golang"}, ResourcePath: "/topics/golang"},
+			{Topic: graphql.Topic{Name: "graphql"}, ResourcePath: "/topics/graphql"},
 		},
 	}
 	collaborators := graphql.Collaborators{
 		Nodes: []graphql.Collaborator{
-			graphql.Collaborator{Name: "Marco Franssen", Login: "marcofranssen", AvatarURL: "https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4"},
-			graphql.Collaborator{Name: "John Doe", Login: "johndoe", AvatarURL: "https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4"},
+			{Name: "Marco Franssen", Login: "marcofranssen", AvatarURL: "https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4"},
+			{Name: "John Doe", Login: "johndoe", AvatarURL: "https://avatars3.githubusercontent.com/u/694733?u=6aeb327c48cb88ae31eb88e680b96228f53cae51&v=4"},
 		},
 	}
 	languages := graphql.Languages{
 		Edges: []graphql.LanguageEdge{
-			graphql.LanguageEdge{Node: graphql.LanguageNode{Name: "Go", Color: "#cc0000"}, Size: 3000},
-			graphql.LanguageEdge{Node: graphql.LanguageNode{Name: "JavaScript", Color: "#0000cc"}, Size: 532},
+			{Node: graphql.LanguageNode{Name: "Go", Color: "#cc0000"}, Size: 3000},
+			{Node: graphql.LanguageNode{Name: "JavaScript", Color: "#0000cc"}, Size: 532},
 		},
 	}
 	graphqlRepositories := []graphql.Repository{
-		graphql.Repository{Owner: owner, Name: "private-repo", Description: "I am private ", IsPrivate: true},
-		graphql.Repository{Owner: owner, Name: "internal-repo", Description: "Superb inner-source stuff", IsPrivate: true},
-		graphql.Repository{Owner: owner, Name: "opensource", Description: "I'm shared with the world", RepositoryTopics: topics},
-		graphql.Repository{Owner: owner, Name: "secret-repo", Description: " ** secrets ** ", IsPrivate: true, Collaborators: collaborators, Languages: languages},
+		{Owner: owner, Name: "private-repo", Description: "I am private ", IsPrivate: true},
+		{Owner: owner, Name: "internal-repo", Description: "Superb inner-source stuff", IsPrivate: true},
+		{Owner: owner, Name: "opensource", Description: "I'm shared with the world", RepositoryTopics: topics},
+		{Owner: owner, Name: "secret-repo", Description: " ** secrets ** ", IsPrivate: true, Collaborators: collaborators, Languages: languages},
 	}
 
 	privateRepos := []*gh.Repository{
-		&gh.Repository{Name: stringPointer("private-repo")},
-		&gh.Repository{Name: stringPointer("secret-repo")},
+		{Name: stringPointer("private-repo")},
+		{Name: stringPointer("secret-repo")},
 	}
 	ghRepos, err := github.Map(graphqlRepositories, privateRepos)
 	if !assert.NoError(err) {

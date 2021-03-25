@@ -75,7 +75,7 @@ func TestConvertGithubProjectsJSON(t *testing.T) {
 		},
 		&grimoirelab.GithubProjectMatcher{
 			Rules: map[string]grimoirelab.GithubProjectMatcherRule{
-				"One Codebase": grimoirelab.GithubProjectMatcherRule{URL: grimoirelab.MustCompile("(?i)Tabia")},
+				"One Codebase": {URL: grimoirelab.MustCompile("(?i)Tabia")},
 			},
 		},
 	)
