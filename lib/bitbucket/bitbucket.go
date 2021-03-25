@@ -123,7 +123,7 @@ func (c *Client) authenticateRequest(req *http.Request) error {
 	case TokenAuth:
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", auth.Token))
 	default:
-		return errors.New("Unsupported authentication method")
+		return errors.New("unsupported authentication method")
 	}
 
 	return nil
