@@ -11,7 +11,7 @@ require (
 	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/urfave/cli/v2 v2.3.0
-	github.com/xanzy/go-gitlab v0.49.0
+	github.com/xanzy/go-gitlab v0.50.0
 	golang.org/x/net v0.0.0-20210410081132-afb366fc7cd1
 	golang.org/x/oauth2 v0.0.0-20210113205817-d3ed898aa8a3
 	golang.org/x/tools v0.0.0-20210115202250-e0d201561e39
