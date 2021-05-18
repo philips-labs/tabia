@@ -11,17 +11,11 @@ jobs:
     name: Continuous Integration
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
 
-    strategy:
-      matrix:
-        go-version: [1.16]
-
-      fail-fast: true
-
     steps:
-      - name: Set up Go ${{ matrix.go-version }}
+      - name: Set up Go
         uses: actions/setup-go@v2.1.3
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version: 1.16
 
       - name: Check out code
         uses: actions/checkout@v2
