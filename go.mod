@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/antonmedv/expr v1.8.9
 	github.com/google/go-github/v33 v33.0.0
-	github.com/goreleaser/goreleaser v0.166.0
+	github.com/goreleaser/goreleaser v0.166.1
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/shurcooL/githubv4 v0.0.0-20201206200315-234843c633fa
 	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
