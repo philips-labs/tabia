@@ -3,7 +3,7 @@ module github.com/philips-labs/tabia
 go 1.16
 
 require (
-	github.com/antonmedv/expr v1.8.9
+	github.com/antonmedv/expr v1.9.0
 	github.com/google/go-github/v33 v33.0.0
 	github.com/goreleaser/goreleaser v0.174.2
 	github.com/hashicorp/go-cleanhttp v0.5.2
