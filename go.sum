@@ -616,8 +616,8 @@ github.com/urfave/cli/v2 v2.3.0/go.mod h1:LJmUH05zAU44vOAcrfzZQKsZbVcdbOG8rtL3/X
 github.com/vartanbeno/go-reddit/v2 v2.0.0 h1:vjb+mY2GwC00uKeXdM+efhzEJoScc0oQfP5CZrE2R28=
 github.com/vartanbeno/go-reddit/v2 v2.0.0/go.mod h1:758/S10hwZSLm43NPtwoNQdZFSg3sjB5745Mwjb0ANI=
 github.com/xanzy/go-gitlab v0.50.3/go.mod h1:Q+hQhV508bDPoBijv7YjK/Lvlb4PhVhJdKqXVQrUoAE=
-github.com/xanzy/go-gitlab v0.50.4 h1:DA0+D9eTBnZvrGBOQ66XV4ZV9gOFXKbbgm9L99EKCUs=
-github.com/xanzy/go-gitlab v0.50.4/go.mod h1:Q+hQhV508bDPoBijv7YjK/Lvlb4PhVhJdKqXVQrUoAE=
+github.com/xanzy/go-gitlab v0.52.0 h1:OApYc2QN3/eA0G/1MpOgiix8XXp94UIZubrOhCTShG0=
+github.com/xanzy/go-gitlab v0.52.0/go.mod h1:Q+hQhV508bDPoBijv7YjK/Lvlb4PhVhJdKqXVQrUoAE=
 github.com/xanzy/ssh-agent v0.2.1/go.mod h1:mLlQY/MoOhWBj+gOGMQkOeiEvkx+8pJSI+0Bx9h2kr4=
 github.com/xanzy/ssh-agent v0.3.0 h1:wUMzuKtKilRgBAD1sUb8gOwwRr2FGoBVumcjoOACClI=
 github.com/xanzy/ssh-agent v0.3.0/go.mod h1:3s9xbODqPuuhK9JV1R321M/FlMZSBvE5aY6eAcqrDh0=
