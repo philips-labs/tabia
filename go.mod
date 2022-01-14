@@ -15,5 +15,5 @@ require (
 	github.com/xanzy/go-gitlab v0.52.2
 	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-	golang.org/x/tools v0.1.5
+	golang.org/x/tools v0.1.8
 )
