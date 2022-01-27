@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/antonmedv/expr v1.9.0
 	github.com/google/go-github/v33 v33.0.0
-	github.com/goreleaser/goreleaser v1.3.1
+	github.com/goreleaser/goreleaser v1.4.1
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/matryer/is v1.4.0 // indirect
 	github.com/shurcooL/githubv4 v0.0.0-20201206200315-234843c633fa
