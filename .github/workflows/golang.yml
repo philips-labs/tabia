@@ -13,9 +13,10 @@ jobs:
 
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v2.1.5
+        uses: actions/setup-go@v2.2.0
         with:
-          go-version: 1.16
+          go-version: '1.16'
+          check-latest: true
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -70,9 +71,10 @@ jobs:
 
     steps:
       - name: Set up Go 1.16
-        uses: actions/setup-go@v2.1.5
+        uses: actions/setup-go@v2.2.0
         with:
-          go-version: 1.16
+          go-version: '1.16'
+          check-latest: true
 
       - name: Checkout
         uses: actions/checkout@v2
