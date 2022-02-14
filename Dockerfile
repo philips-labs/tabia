@@ -1,4 +1,4 @@
-FROM golang:1.16-alpine as builder
+FROM golang:1.17-alpine as builder
 RUN mkdir build
 WORKDIR /build
 COPY go.mod go.sum ./
