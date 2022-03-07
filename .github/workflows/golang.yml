@@ -19,7 +19,7 @@ jobs:
           check-latest: true
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Cache Go modules
         uses: actions/cache@v2.1.7
@@ -77,7 +77,7 @@ jobs:
           check-latest: true
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
