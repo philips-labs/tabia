@@ -10,9 +10,9 @@ require (
 	github.com/shurcooL/githubv4 v0.0.0-20220115235240-a14260e6f8a2
 	github.com/stretchr/testify v1.8.0
 	github.com/urfave/cli/v2 v2.10.3
-	github.com/xanzy/go-gitlab v0.65.0
-	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
-	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
+	github.com/xanzy/go-gitlab v0.68.2
+	golang.org/x/net v0.0.0-20220520000938-2e3eb7b945c2
+	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
 	golang.org/x/tools v0.1.11
 )
 
@@ -101,7 +101,7 @@ require (
 	github.com/goreleaser/fileglob v1.3.0 // indirect
 	github.com/goreleaser/nfpm/v2 v2.15.1 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
-	github.com/hashicorp/go-retryablehttp v0.7.0 // indirect
+	github.com/hashicorp/go-retryablehttp v0.7.1 // indirect
 	github.com/hashicorp/go-version v1.3.0 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/iancoleman/orderedmap v0.2.0 // indirect
@@ -141,13 +141,13 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220204135822-1c1b9b1eba6a // indirect
 	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
+	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/api v0.63.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa // indirect
 	google.golang.org/grpc v1.43.0 // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
+	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/mail.v2 v2.3.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
