@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/antonmedv/expr v1.9.0
 	github.com/google/go-github/v33 v33.0.0
-	github.com/goreleaser/goreleaser v1.10.1
+	github.com/goreleaser/goreleaser v1.10.2
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/shurcooL/githubv4 v0.0.0-20220115235240-a14260e6f8a2
 	github.com/stretchr/testify v1.8.0
@@ -107,7 +107,7 @@ require (
 	github.com/iancoleman/orderedmap v0.2.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/invopop/jsonschema v0.4.0 // indirect
+	github.com/invopop/jsonschema v0.5.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kevinburke/ssh_config v1.1.0 // indirect
