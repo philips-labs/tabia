@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/antonmedv/expr v1.9.0
 	github.com/google/go-github/v33 v33.0.0
-	github.com/goreleaser/goreleaser v1.11.3
+	github.com/goreleaser/goreleaser v1.11.4
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/shurcooL/githubv4 v0.0.0-20220115235240-a14260e6f8a2
 	github.com/stretchr/testify v1.8.0
