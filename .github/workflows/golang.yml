@@ -69,6 +69,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
 
+    permissions:
+      contents: write
+
     steps:
       - name: Set up Go 1.18
         uses: actions/setup-go@v3
@@ -90,7 +93,7 @@ jobs:
           version: latest
           args: release --rm-dist
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Logout from DockerHub Registry
         if: ${{ always() }}
