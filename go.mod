@@ -10,7 +10,7 @@ require (
 	github.com/shurcooL/githubv4 v0.0.0-20220115235240-a14260e6f8a2
 	github.com/stretchr/testify v1.8.0
 	github.com/urfave/cli/v2 v2.23.0
-	github.com/xanzy/go-gitlab v0.73.1
+	github.com/xanzy/go-gitlab v0.74.0
 	golang.org/x/net v0.0.0-20220805013720-a33c5aa5df48
 	golang.org/x/oauth2 v0.0.0-20220722155238-128564f6959c
 	golang.org/x/tools v0.1.12
