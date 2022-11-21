@@ -5,12 +5,12 @@ go 1.18
 require (
 	github.com/antonmedv/expr v1.9.0
 	github.com/google/go-github/v33 v33.0.0
-	github.com/goreleaser/goreleaser v1.12.2
+	github.com/goreleaser/goreleaser v1.13.0
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/shurcooL/githubv4 v0.0.0-20220115235240-a14260e6f8a2
 	github.com/stretchr/testify v1.8.1
 	github.com/urfave/cli/v2 v2.23.0
-	github.com/xanzy/go-gitlab v0.73.1
+	github.com/xanzy/go-gitlab v0.74.0
 	golang.org/x/net v0.0.0-20220805013720-a33c5aa5df48
 	golang.org/x/oauth2 v0.0.0-20220722155238-128564f6959c
 	golang.org/x/tools v0.1.12
@@ -84,7 +84,7 @@ require (
 	github.com/dghubble/oauth1 v0.7.1 // indirect
 	github.com/dghubble/sling v1.4.0 // indirect
 	github.com/dimchansky/utfbom v1.1.1 // indirect
-	github.com/disgoorg/disgo v0.13.20 // indirect
+	github.com/disgoorg/disgo v0.13.21 // indirect
 	github.com/disgoorg/log v1.2.0 // indirect
 	github.com/disgoorg/snowflake/v2 v2.0.1 // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
@@ -98,7 +98,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/go-github/v48 v48.0.0 // indirect
+	github.com/google/go-github/v48 v48.1.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/google/wire v0.5.0 // indirect
@@ -106,7 +106,7 @@ require (
 	github.com/googleapis/gax-go/v2 v2.4.0 // indirect
 	github.com/goreleaser/chglog v0.2.2 // indirect
 	github.com/goreleaser/fileglob v1.3.0 // indirect
-	github.com/goreleaser/nfpm/v2 v2.20.0 // indirect
+	github.com/goreleaser/nfpm/v2 v2.22.1 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.1 // indirect
 	github.com/hashicorp/go-version v1.3.0 // indirect
@@ -114,15 +114,16 @@ require (
 	github.com/iancoleman/orderedmap v0.2.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
-	github.com/invopop/jsonschema v0.6.0 // indirect
+	github.com/invopop/jsonschema v0.7.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kevinburke/ssh_config v1.1.0 // indirect
-	github.com/klauspost/compress v1.15.11 // indirect
+	github.com/klauspost/compress v1.15.12 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/mattn/go-mastodon v0.0.6 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
@@ -141,10 +142,11 @@ require (
 	github.com/sasha-s/go-csync v0.0.0-20210812194225-61421b77c44b // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
-	github.com/slack-go/slack v0.11.3 // indirect
-	github.com/spf13/cobra v1.6.0 // indirect
+	github.com/slack-go/slack v0.11.4 // indirect
+	github.com/spf13/cobra v1.6.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
+	github.com/tomnomnom/linkheader v0.0.0-20180905144013-02ca5825eb80 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1 // indirect
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
