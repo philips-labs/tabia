@@ -13,7 +13,7 @@ require (
 	github.com/xanzy/go-gitlab v0.77.0
 	golang.org/x/net v0.5.0
 	golang.org/x/oauth2 v0.0.0-20220722155238-128564f6959c
-	golang.org/x/tools v0.4.0
+	golang.org/x/tools v0.5.0
 )
 
 require (
