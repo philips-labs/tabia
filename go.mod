@@ -8,7 +8,7 @@ require (
 	github.com/goreleaser/goreleaser v1.15.2
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/shurcooL/githubv4 v0.0.0-20220115235240-a14260e6f8a2
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.2
 	github.com/urfave/cli/v2 v2.24.4
 	github.com/xanzy/go-gitlab v0.79.1
 	golang.org/x/net v0.8.0
