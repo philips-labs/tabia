@@ -11,7 +11,7 @@ require (
 	github.com/stretchr/testify v1.8.3
 	github.com/urfave/cli/v2 v2.25.6
 	github.com/xanzy/go-gitlab v0.83.0
-	golang.org/x/net v0.10.0
+	golang.org/x/net v0.11.0
 	golang.org/x/oauth2 v0.7.0
 	golang.org/x/tools v0.9.2
 )
@@ -220,13 +220,13 @@ require (
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/automaxprocs v1.5.2 // indirect
 	gocloud.dev v0.29.0 // indirect
-	golang.org/x/crypto v0.9.0 // indirect
+	golang.org/x/crypto v0.10.0 // indirect
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/sync v0.2.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/term v0.8.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/sys v0.9.0 // indirect
+	golang.org/x/term v0.9.0 // indirect
+	golang.org/x/text v0.10.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.121.0 // indirect
