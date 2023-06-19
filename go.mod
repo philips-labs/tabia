@@ -12,7 +12,7 @@ require (
 	github.com/urfave/cli/v2 v2.25.6
 	github.com/xanzy/go-gitlab v0.83.0
 	golang.org/x/net v0.11.0
-	golang.org/x/oauth2 v0.7.0
+	golang.org/x/oauth2 v0.9.0
 	golang.org/x/tools v0.10.0
 )
 
