@@ -55,6 +55,12 @@ func TestReduceRepositories(t *testing.T) {
 		assert.ElementsMatch(reduced, repos)
 	}
 
+	reduced, err = github.ReduceRepositories(repos, `.Name == "garo"`)
+	if assert.NoError(err) {
+		assert.Len(reduced, 1)
+		assert.Contains(reduced, repos[1])
+	}
+
 	reduced, err = github.ReduceRepositories(repos, `{ .Name == "garo" }`)
 	if assert.NoError(err) {
 		assert.Len(reduced, 1)
@@ -140,7 +146,7 @@ func TestReduceMembers(t *testing.T) {
 		{Name: "Jane Doe"},
 	}
 
-	reduced, err := github.ReduceMembers(members, `{ .Name == "Marco Franssen" }`)
+	reduced, err := github.ReduceMembers(members, `.Name == "Marco Franssen"`)
 	if assert.NoError(err) {
 		assert.Len(reduced, 1)
 		assert.Contains(reduced, members[1])
@@ -161,13 +167,13 @@ func TestReduceWrongExpression(t *testing.T) {
 		{Name: "tabia", Visibility: shared.Public},
 	}
 
-	reduced, err := github.ReduceRepositories(repos, `.Name == "tabia"`)
+	reduced, err := github.ReduceRepositories(repos, `.Name = "tabia"`)
 	assert.Error(err)
-	assert.EqualError(err, "unexpected token Operator(\".\") (1:22)\n | filter(Repositories, .Name == \"tabia\")\n | .....................^")
+	assert.EqualError(err, "unexpected token Operator(\"=\") (1:28)\n | filter(Repositories, .Name = \"tabia\")\n | ...........................^")
 	assert.Nil(reduced)
 
 	reduced, err = github.ReduceRepositories(repos, `{ UnExistingFunc(.URL, "stuff") }`)
 	assert.Error(err)
-	assert.EqualError(err, "cannot get \"UnExistingFunc\" from github.RepositoryFilterEnv (1:24)\n | filter(Repositories, { UnExistingFunc(.URL, \"stuff\") })\n | .......................^")
+	assert.EqualError(err, "cannot fetch UnExistingFunc from github.RepositoryFilterEnv (1:24)\n | filter(Repositories, { UnExistingFunc(.URL, \"stuff\") })\n | .......................^")
 	assert.Nil(reduced)
 }

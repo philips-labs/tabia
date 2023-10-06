@@ -53,6 +53,12 @@ func TestReduce(t *testing.T) {
 		assert.ElementsMatch(reduced, repos)
 	}
 
+	reduced, err = gitlab.Reduce(repos, `.Name == "stuff"`)
+	if assert.NoError(err) {
+		assert.Len(reduced, 1)
+		assert.Contains(reduced, repos[1])
+	}
+
 	reduced, err = gitlab.Reduce(repos, `{ .Name == "stuff" }`)
 	if assert.NoError(err) {
 		assert.Len(reduced, 1)
@@ -114,14 +120,14 @@ func TestReduceWrongExpression(t *testing.T) {
 		gitlab.Repository{Name: "cool", Visibility: shared.Public},
 	}
 
-	reduced, err := gitlab.Reduce(repos, `.Name == "cool"`)
+	reduced, err := gitlab.Reduce(repos, `.Name = "cool"`)
 	assert.Error(err)
-	assert.EqualError(err, "unexpected token Operator(\".\") (1:22)\n | filter(Repositories, .Name == \"cool\")\n | .....................^")
+	assert.EqualError(err, "unexpected token Operator(\"=\") (1:28)\n | filter(Repositories, .Name = \"cool\")\n | ...........................^")
 	assert.Nil(reduced)
 
 	reduced, err = gitlab.Reduce(repos, `{ UnExistingFunc(.URL, "stuff") }`)
 	assert.Error(err)
-	assert.EqualError(err, "cannot get \"UnExistingFunc\" from gitlab.RepositoryFilterEnv (1:24)\n | filter(Repositories, { UnExistingFunc(.URL, \"stuff\") })\n | .......................^")
+	assert.EqualError(err, "cannot fetch UnExistingFunc from gitlab.RepositoryFilterEnv (1:24)\n | filter(Repositories, { UnExistingFunc(.URL, \"stuff\") })\n | .......................^")
 	assert.Nil(reduced)
 }
 
