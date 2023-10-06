@@ -1,6 +1,6 @@
 module github.com/philips-labs/tabia
 
-go 1.18
+go 1.21
 
 require (
 	github.com/antonmedv/expr v1.9.0
