@@ -27,8 +27,6 @@ builds:
 archives:
   - id: archive
     format: tar.gz
-    replacements:
-      darwin: macOS
     files:
       - LICENSE*
       - README*
