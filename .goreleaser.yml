@@ -38,10 +38,10 @@ dockers:
   - goos: linux
     goarch: amd64
     image_templates:
-      - "philipssoftware/{{ .ProjectName }}:{{ .Tag }}"
-      - "philipssoftware/{{ .ProjectName }}:v{{ .Major }}"
-      - "philipssoftware/{{ .ProjectName }}:v{{ .Major }}.{{ .Minor }}"
-      - "philipssoftware/{{ .ProjectName }}:latest"
+      - "ghcr.io/philips-labs/{{ .ProjectName }}:{{ .Tag }}"
+      - "ghcr.io/philips-labs/{{ .ProjectName }}:v{{ .Major }}"
+      - "ghcr.io/philips-labs/{{ .ProjectName }}:v{{ .Major }}.{{ .Minor }}"
+      - "ghcr.io/philips-labs/{{ .ProjectName }}:latest"
     build_flag_templates:
       - "--pull"
       - "--label=com.opencontainers.image.created={{.Date}}"
