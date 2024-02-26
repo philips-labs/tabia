@@ -47,7 +47,7 @@ jobs:
           TABIA_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Code Coverage
-        uses: codecov/codecov-action@v3.1.4
+        uses: codecov/codecov-action@v4.0.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.out
