@@ -12,7 +12,7 @@ require (
 	github.com/urfave/cli/v2 v2.27.1
 	github.com/xanzy/go-gitlab v0.95.2
 	golang.org/x/net v0.24.0
-	golang.org/x/oauth2 v0.15.0
+	golang.org/x/oauth2 v0.19.0
 	golang.org/x/tools v0.20.0
 )
 
@@ -240,7 +240,6 @@ require (
 	golang.org/x/time v0.4.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
 	google.golang.org/api v0.151.0 // indirect
-	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto v0.0.0-20231120223509-83a465c0220f // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20231120223509-83a465c0220f // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231120223509-83a465c0220f // indirect
