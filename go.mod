@@ -14,7 +14,7 @@ require (
 	github.com/xanzy/go-gitlab v0.105.0
 	golang.org/x/net v0.26.0
 	golang.org/x/oauth2 v0.20.0
-	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d
+	golang.org/x/tools v0.22.0
 )
 
 require (
@@ -283,7 +283,7 @@ require (
 	gocloud.dev v0.37.0 // indirect
 	golang.org/x/crypto v0.24.0 // indirect
 	golang.org/x/exp v0.0.0-20231206192017-f3f8817b8deb // indirect
-	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/term v0.21.0 // indirect
