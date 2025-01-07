@@ -9,7 +9,7 @@ require (
 	github.com/goreleaser/goreleaser v1.26.2
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/shurcooL/githubv4 v0.0.0-20220115235240-a14260e6f8a2
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/urfave/cli/v2 v2.27.5
 	github.com/xanzy/go-gitlab v0.105.0
 	golang.org/x/net v0.31.0
